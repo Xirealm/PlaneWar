@@ -2,7 +2,8 @@ import { Physics, Scene } from "phaser";
 
 export abstract class Hero extends Physics.Arcade.Sprite {
     level: number = 1;
-    hp: number = 100; // 英雄的生命值
+    hp: number = 3; // 英雄的生命值
+    hpMax:number = 3 // 英雄的生命值上限
     energy: number = 100; // 英雄的能量值
     
     bullets: Physics.Arcade.Group; //英雄的子弹组
@@ -53,7 +54,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
                 //对子弹属性进行配置
                 this.bullets.getFirstDead()?.setScale(0.5);
                 // 发射子弹
-                this.bullets.getFirstDead()?.fire(this.x, this.y - 32, -200);
+                this.bullets.getFirstDead()?.fire(this.x, this.y - 32, -150);
             },
             callbackScope: this,
             loop: true, // 循环生成

@@ -5,11 +5,13 @@ import titleImg from "../assets/image/interface/title.png"
 import beginBtnImg from "../assets/image/interface/beginBtn.png";
 import enemyAImg from "../assets/image/enemy/enemy1.png";
 import enemyBImg from "../assets/image/enemy/enemy2.png";
+import enemyFastImg from "../assets/image/enemy/enemy11.png";
 import heroAImg from "../assets/image/hero/hero01.png";
 import heroBImg from "../assets/image/hero/hero_b_1.png";
 import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
+import supplyExpImg from "../assets/image/hero/article1.png"
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
 // import bulletAudio from "../assets/audio/bullet.mp3";
@@ -28,9 +30,11 @@ export class Preloader extends Scene {
     this.load.image("beginBtn", beginBtnImg);
     this.load.image("enemyA", enemyAImg);
     this.load.image("enemyB", enemyBImg);
+    this.load.image("enemyFast", enemyFastImg);
     this.load.image("heroA", heroAImg);
     this.load.image("heroB", heroBImg);
     this.load.image("bulletA", bulletAImg);
+    this.load.image("supplyExp", supplyExpImg);
     // 加载音频资源
     this.load.audio("bgm", bgmAudio);
     this.load.audio("boom", boomAudio);
@@ -60,8 +64,7 @@ export class Preloader extends Scene {
         this.scene.start("Main");
       })
       .setOrigin(0.5);
-    // 使用 Phaser 的动画管理器创建动画
-    // 创建动画，命名为 boom，后面使用
+    // 创建爆炸动画
     this.anims.create({
       key: "boom",
       frames: this.anims.generateFrameNames("boom", {
@@ -74,6 +77,4 @@ export class Preloader extends Scene {
       frameRate: 12,
     });
   }
-  // 每一帧的回调
-  update() {}
 }

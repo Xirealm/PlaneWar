@@ -22,8 +22,10 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
   // 每一帧更新回调 执行子弹销毁，重新置于对象池
   preUpdate(time: number, delta: number) {
     super.preUpdate(time, delta);
-    // 子弹出界事件（子弹走到顶部超出屏幕）
-    if (this.y <= -14) {
+    // 子弹出界事件（子弹走到顶部超出屏幕）    
+    if (this.y <= -this.displayHeight) {  //这个数值为子弹的高度
+      console.log("子弹超出屏幕");
+      
       this.disableBody(true, true);
     }
   }

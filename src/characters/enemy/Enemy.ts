@@ -1,7 +1,8 @@
 import { Physics, Scene ,Math} from "phaser";
 
 export abstract class Enemy extends Physics.Arcade.Sprite {
-  hp: number = 1; // 敌人的生命值
+  hp: number; // 敌机的生命值
+  score: number; //敌机的分数值
   constructor(scene: Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
     scene.add.existing(this);
@@ -9,15 +10,6 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.setScale(0.5);
     this.setCollideWorldBounds(true); // 让敌人碰到世界边缘时停止
   }
-  //生成敌军
-  born() {
-    let x = Math.Between(30, 345);
-    let y = Math.Between(-20, -40);
-    this.hp = 1;
-    this.enableBody(true, x, y, true, true);
-    this.setVelocityY(Math.Between(100, 150));
-  }
-
   preUpdate(time: number, delta: number) {
     super.preUpdate(time, delta);
     let { height } = this.scene.cameras.main;
@@ -26,5 +18,7 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
       this.disableBody(true, true);
     }
   }
+  abstract born():void
   abstract takeDamage(damage: number): void;
+  abstract killed(): void;
 }

@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { EnemyA } from "./EnemyA";
 import { EnemyB } from "./EnemyB";
+import { EnemyFast } from "./EnemyFast";
 
 export class EnemyFactory {
     static createEnemy(scene: Scene, type: string) {
@@ -9,6 +10,8 @@ export class EnemyFactory {
                 return new EnemyA(scene , 0 , 0 );
             case "EnemyB":
                 return new EnemyB(scene , 0 , 0 );
+            case "EnemyFast":
+                return new EnemyFast(scene , 0 , 0 );
             default:
                 throw new Error(`敌机类型 ${type} 不支持`);
         }
