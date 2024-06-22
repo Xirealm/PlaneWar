@@ -1,12 +1,16 @@
 import { Scene } from "phaser";
 import backgroundImg from "../assets/image/bg/mainBg.jpg";
-import gameBackgroundImg1 from "../assets/image/bg/bg.jpg"
+import gameBackgroundImg1 from "../assets/image/bg/bg0.jpg"
 import titleImg from "../assets/image/interface/title.png"
 import beginBtnImg from "../assets/image/interface/beginBtn.png";
 import enemyAImg from "../assets/image/enemy/enemy1.png";
 import enemyBImg from "../assets/image/enemy/enemy2.png";
 import enemyFastImg from "../assets/image/enemy/enemy11.png";
 import heroAImg from "../assets/image/hero/hero01.png";
+import heroALevel2Img from "../assets/image/hero/hero02.png";
+import heroALevel3Img from "../assets/image/hero/hero03.png";
+import heroALevel4Img from "../assets/image/hero/hero04.png";
+import heroALevel5Img from "../assets/image/hero/hero3.png";
 import heroBImg from "../assets/image/hero/hero_b_1.png";
 import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
@@ -32,6 +36,10 @@ export class Preloader extends Scene {
     this.load.image("enemyB", enemyBImg);
     this.load.image("enemyFast", enemyFastImg);
     this.load.image("heroA", heroAImg);
+    this.load.image("heroALevel2", heroALevel2Img);
+    this.load.image("heroALevel3", heroALevel3Img);
+    this.load.image("heroALevel4", heroALevel4Img);
+    this.load.image("heroALevel5", heroALevel5Img);
     this.load.image("heroB", heroBImg);
     this.load.image("bulletA", bulletAImg);
     this.load.image("supplyExp", supplyExpImg);

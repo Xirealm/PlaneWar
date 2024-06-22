@@ -3,9 +3,11 @@ import { Enemy } from "./Enemy";
 
 export class EnemyFast extends Enemy {
   hp: number = 1; // 敌机Fast的生命值
-  score: number = 2; //敌机B的分数
+  score: number = 3; //敌机B的分数
+  exp: number = 2;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, "enemyFast");
+    this.setScale(0.3);
   }
   //敌机生成
   born() {
@@ -13,7 +15,7 @@ export class EnemyFast extends Enemy {
     let y = Math.Between(-20, -40);
     this.hp = 1;
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(300);
+    this.setVelocityY(400);
   }
   //敌机受到伤害
   takeDamage(damage: number): void {

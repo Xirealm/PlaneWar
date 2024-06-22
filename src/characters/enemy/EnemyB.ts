@@ -3,7 +3,8 @@ import { Enemy } from "./Enemy";
 
 export class EnemyB extends Enemy {
   hp: number = 2; // 敌机B的生命值
-  score: number = 2; //敌机B的分数
+  score: number = 5; //敌机B的分数
+  exp: number = 1;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, "enemyB");
   }
