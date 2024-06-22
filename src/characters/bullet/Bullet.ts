@@ -2,14 +2,15 @@ import { Scene, Physics } from "phaser";
 
 export abstract class Bullet extends Physics.Arcade.Sprite {
   damage: number; // 子弹造成的伤害
-  size: number = 0.5; // 子弹大小
+  size: number = 0.5; // 子弹初始大小
   fireVelocity: number = 200; // 子弹飞机速度
   constructor(scene: Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
+    // 初始化子弹逻辑
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setCollideWorldBounds(true); // 子弹撞到世界边缘时销毁
-    // 初始化子弹逻辑
+    this.setScale(this.size);
   }
   /**
    * 发射子弹
@@ -20,6 +21,9 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
     this.enableBody(true, x, y, true, true);
     this.setVelocityY(-this.fireVelocity);
     // this.scene.sound.play("bullet");
+  }
+  upgrade(level: number) {
+    this.damage = this.damage + level * 0.55;
   }
   // 每一帧更新回调 销毁子弹，重新置于对象池
   preUpdate(time: number, delta: number) {

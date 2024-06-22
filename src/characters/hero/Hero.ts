@@ -1,5 +1,6 @@
-import { Physics, Scene } from "phaser";
-import { calcLevelAndRemainingExp } from "../../utils/level"
+import { Physics, Scene,Time } from "phaser";
+import { Bullet } from "../bullet/Bullet";
+import { calcLevelAndRemainingExp } from "../../utils/level";
 
 export abstract class Hero extends Physics.Arcade.Sprite {
   level: number = 1;
@@ -12,6 +13,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   isDown: boolean = false;
   downX: number;
   downY: number;
+  fireEvent: Time.TimerEvent;
 
   constructor(scene: Scene, texture: string) {
     // 创建对象
@@ -31,6 +33,10 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   }
   //注册事件
   addEvent() {
+    this.initMoveEvent()
+    this.initFireEvent();
+  }
+  initMoveEvent(){
     // 手指按下我方飞机
     this.on("pointerdown", () => {
       this.isDown = true;
@@ -48,16 +54,26 @@ export abstract class Hero extends Physics.Arcade.Sprite {
         this.y = this.downY + pointer.y - pointer.downY;
       }
     });
-    // 定时器 每1秒生成子弹
-    this.scene.time.addEvent({
+  }
+  initFireEvent(){
+    // 定时器 每1秒发射子弹
+    this.fireEvent = this.scene.time.addEvent({
       //子弹发射频率
       delay: this.fireFrequency,
       callback: () => {
-        //对子弹属性进行配置
-        const bullet = this.bullets.getFirstDead();
-        bullet.setScale(bullet.size);
-        // 发射子弹
-        bullet.fire(this.x, this.y - 32);
+        if (this.level === 1) {
+          const bullet = this.bullets.getFirstDead();
+          bullet.fire(this.x, this.y - 32);
+        } else if (this.level >= 2) {
+          for (let i = 0; i < 2; i++) {
+            const bullet = this.bullets.getFirstDead();
+            if (i === 0) {     
+              bullet.fire(this.x - 10, this.y - 32);
+            } else if (i === 1) {
+              bullet.fire(this.x + 10, this.y - 32);
+            }
+          }
+        }
       },
       callbackScope: this,
       loop: true, // 循环生成
@@ -68,7 +84,12 @@ export abstract class Hero extends Physics.Arcade.Sprite {
     if (this.level < 6) {
       const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
       if (newLevel > this.level) {
+        //英雄升级
         this.upgrade(newLevel);
+        //子弹升级
+        this.bullets.getChildren().forEach((bullet) => {
+          (bullet as Bullet).upgrade(newLevel);
+        });
       } else {
         console.log(
           "距离升到",
@@ -80,6 +101,17 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       }
     }
   }
-  //抽象方法升级
-  abstract upgrade(level: number): void;
+  //升级方法
+  upgrade(level: number): void {
+    this.level = level;
+    // 抛出升级事件
+    this.scene.events.emit("heroUpgrade", this);
+    this.fireFrequency = this.fireFrequency * 0.8;
+    // 移除现有的定时器
+    if (this.fireEvent) {
+      this.scene.time.removeEvent(this.fireEvent);
+    }
+    // 重新设置发射事件
+    this.initFireEvent();
+  }
 }

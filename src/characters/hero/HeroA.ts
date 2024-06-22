@@ -2,15 +2,14 @@ import { Scene } from "phaser";
 import { Hero } from "./Hero";
 
 export class HeroA extends Hero {
-    fireFrequency: number = 1000;
+    fireFrequency: number = 500; // 子弹的发射频率
     constructor(scene: Scene) {
         super(scene, "heroA");
         console.log(`英雄A登场,等级为: ${this.level}`);
         // this.setCollideWorldBounds(true);
     }
-
-    upgrade(level:number): void {
-        this.level = level;
+    upgrade(level: number): void {
+        super.upgrade(level);
         console.log(`英雄A升级了,等级为: ${this.level}`);
         switch (level) {
             case 2:
