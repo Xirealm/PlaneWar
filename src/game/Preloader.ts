@@ -24,12 +24,15 @@ import heroBImg from "../assets/image/hero/hero_b_1.png";
 import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
+import bulletFireBirdImg from "../assets/image/bullet/bulletFireBird.png";
+import bulletFireBirdJson from "../assets/image/bullet/bulletFireBird.json";
 
 import supplyExpImg from "../assets/image/hero/article1.png"
 import supplyHpImg from "../assets/image/hero/hero_blood.png"
 import supplyPowImg from "../assets/image/hero/article2.png"
 
 import numberImg from "../assets/image/interface/number.png"
+import pauseImg from "../assets/image/interface/pause.png"
 
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
@@ -58,6 +61,8 @@ export class Preloader extends Scene {
     this.load.image("heroALevel5", heroALevel5Img);
     this.load.image("heroB", heroBImg);
     this.load.image("bulletA", bulletAImg);
+    this.load.image("pause", pauseImg);
+    
     //加载补给图片资源
     this.load.image("supplyExp", supplyExpImg);
     this.load.image("supplyHp", supplyHpImg);
@@ -73,6 +78,7 @@ export class Preloader extends Scene {
     this.load.audio("boom", boomAudio);
     //加载纹理图集
     this.load.atlas("boom", boomImg, boomJson);
+    this.load.atlas("bulletFireBird", bulletFireBirdImg, bulletFireBirdJson);
     this.load.spritesheet("number", numberImg, { frameWidth: 64, frameHeight: 88 })
   }
   // preload中的资源全部加载完成后执行
@@ -105,6 +111,18 @@ export class Preloader extends Scene {
         prefix: "boom",
         start: 1,
         end: 6,
+        zeroPad: 2,
+      }),
+      repeat: 0,
+      frameRate: 12,
+    });
+    // 创建火鸟子弹发射动画
+    this.anims.create({
+      key: "bulletFireBird",
+      frames: this.anims.generateFrameNames("bulletFireBird", {
+        prefix: "fireBird",
+        start: 1,
+        end: 8,
         zeroPad: 2,
       }),
       repeat: 0,

@@ -13,6 +13,8 @@ import { EnemyBoss } from "../characters/enemy/EnemyBoss"
 import { BulletFactory } from "../characters/bullet/BulletFactory";
 import { Bullet } from "../characters/bullet/Bullet"
 import { BulletA } from "../characters/bullet/BulletA";
+import { BulletFireBird } from "../characters/bullet/BulletFireBird";
+
 
 import { SupplyFactory } from "../characters/supply/SupplyFactory";
 import { Supply } from "../characters/supply/Supply"
@@ -30,6 +32,7 @@ let enemiesB: Physics.Arcade.Group;
 let enemiesFast: Physics.Arcade.Group;
 let enemiesBoss: Physics.Arcade.Group;
 let bulletsA: Physics.Arcade.Group;
+let bulletFireBird: BulletFireBird;
 let suppliesExp: Physics.Arcade.Group;
 let suppliesHp: Physics.Arcade.Group;
 let suppliesPow: Physics.Arcade.Group;
@@ -56,6 +59,16 @@ export class Main extends Scene {
     background = this.add
       .tileSprite(0, 0, width, height, "gameBackground1")
       .setOrigin(0, 0);
+    // 暂停按钮
+    const pauseBtn = this.add
+      .image(width, 5, "pause")
+      .setOrigin(1, 0)
+      .setDepth(1)
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.scene.pause()
+        this.game.scene.start("Pause");
+      });
     // 玩家
     hero = HeroFactory.createHero(this, "TypeA");
     // 子弹
@@ -69,47 +82,46 @@ export class Main extends Scene {
     // 初始化子弹A对象池
     for (let i = 0; i < 500; i++) {
       let bullet = BulletFactory.createBullet(this, "BulletA");
-      bullet.setVisible(false);
-      bullet.setActive(false);
+      bullet.disableBody(true, true);
       bulletsA.add(bullet);
     }
+    bulletFireBird = BulletFactory.createBullet(this, "BulletFireBird");
+    bulletFireBird.disableBody(true, true);
     // 定义敌机A对象池
     enemiesA = this.physics.add.group({
       classType: EnemyA,
-      maxSize: 20, // 敌机A对象池的最大数量
+      maxSize: 50, // 敌机A对象池的最大数量
       enable: false,
       immovable: true,
     });
     // 初始化敌机A对象池
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
       let enemy = EnemyFactory.createEnemy(this, "EnemyA");
-      enemy.setVisible(false);
-      enemy.setActive(false);
+      enemy.disableBody(true, true);
       enemiesA.add(enemy);
     }
     // 定义敌机B对象池
     enemiesB = this.physics.add.group({
       classType: EnemyB,
-      maxSize: 20, // 敌机B对象池的最大数量
+      maxSize: 50, // 敌机B对象池的最大数量
       enable: false,
       immovable: true,
     });
     // 初始化敌机B对象池
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
       let enemy = EnemyFactory.createEnemy(this, "EnemyB");
-      enemy.setVisible(false);
-      enemy.setActive(false);
+      enemy.disableBody(true, true);
       enemiesB.add(enemy);
     }
     // 定义敌机Fast对象池
     enemiesFast = this.physics.add.group({
       classType: EnemyFast,
-      maxSize: 20, // 敌机Fast对象池的最大数量
+      maxSize: 50, // 敌机Fast对象池的最大数量
       enable: false,
       immovable: true,
     });
     // 初始化敌机Fast对象池
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 50; i++) {
       let enemy = EnemyFactory.createEnemy(this, "EnemyFast");
       enemy.disableBody(true, true);
       enemiesFast.add(enemy);
@@ -276,6 +288,11 @@ export class Main extends Scene {
     this.physics.add.overlap(bulletsA, enemiesFast, this.hit, null, this);
     // 子弹A和敌机Boss碰撞
     this.physics.add.overlap(bulletsA, enemiesBoss, this.hit, null, this);
+    // 子弹火鸟和敌机碰撞
+    this.physics.add.overlap(bulletFireBird, enemiesA, this.hit, null, this);
+    this.physics.add.overlap(bulletFireBird, enemiesB, this.hit, null, this);
+    this.physics.add.overlap(bulletFireBird, enemiesFast, this.hit, null, this);
+    this.physics.add.overlap(bulletFireBird, enemiesBoss, this.hit, null, this);
     // 玩家和敌机A碰撞
     this.physics.add.overlap(hero, enemiesA, this.injured, null, this);
     // 玩家和敌机B碰撞
@@ -344,13 +361,26 @@ export class Main extends Scene {
   onHeroUpgrade(hero) {
     // 处理英雄升级后的逻辑
     console.log("英雄升级！！！！！！！！！！！！！！！！！！！", hero);
+    enemiesA.getChildren().forEach((enemy) => {
+      (enemy as Enemy).upgrade(hero.level);
+    })
+    enemiesB.getChildren().forEach((enemy) => {
+      (enemy as Enemy).upgrade(hero.level);
+    })
+    enemiesFast.getChildren().forEach((enemy) => {
+      (enemy as Enemy).upgrade(hero.level);
+    })
+    enemiesBoss.getChildren().forEach((enemy) => {
+      (enemy as Enemy).upgrade(hero.level);
+    })
+    bulletFireBird.fire(hero.x, hero.y - 32);
     for (let i = 0; i < 10; i++) {
       this.spawnEnemy("enemyA");
     }
     for (let i = 0; i < 5; i++) {
       this.spawnEnemy("enemyB");
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3 ; i++) {
       this.spawnEnemy("enemyFast");
     }
     if (hero.level >=3) {
@@ -360,8 +390,10 @@ export class Main extends Scene {
   }
   // 子弹击中敌军
   hit(bullet, enemy) {
-    // console.log("子弹击中敌机,伤害为" + bullet.damage);
-    bullet.disableBody(true, true); //销毁子弹
+    console.log("子弹击中敌机,伤害为" + bullet.damage);
+    if (bullet.bulletType === "baseBullet") {
+      bullet.disableBody(true, true); //销毁子弹
+    }
     enemy.takeDamage(bullet.damage); //对敌机减血
     if (enemy.hp <= 0) {
       this.kill(bullet, enemy);
@@ -384,7 +416,7 @@ export class Main extends Scene {
     scoreGroup.getChildren().forEach((item) => {
       item.destroy();
     });
-    const position = { x: this.width - 50, y: 10 };
+    const position = { x: this.width - 40, y: 10 };
     let scoreStr = score.toString();
     for (let i = scoreStr.length - 1; i >= 0; i--) {
       const digit = parseInt(scoreStr[i]);
@@ -410,7 +442,7 @@ export class Main extends Scene {
     if (hero.hp <= 0) {
       // 显示爆炸
       booms.getFirstDead()?.show(enemy.x, enemy.y);
-      
+
       hero.disableBody(true, true);
       this.gameOver();
     }
@@ -418,7 +450,7 @@ export class Main extends Scene {
   }
   // 游戏结束
   gameOver() {
-    // 暂停当前场景，并没有销毁
+    // 暂停当前场景
     this.sys.pause();
     // 保存分数
     this.registry.set("score", score);

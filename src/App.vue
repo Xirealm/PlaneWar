@@ -4,6 +4,7 @@ import { Game, AUTO, Scale } from "phaser";
 import { Preloader } from "./game/Preloader";
 import { Home } from "./game/Home";
 import { Main } from "./game/Main";
+import { Pause } from "./game/Pause";
 import { End } from "./game/End";
 
 //判断是否为移动端
@@ -26,7 +27,7 @@ onMounted(() => {
                 debug: false,
             },
         },
-        scene: [Preloader, Home , Main, End],
+        scene: [Preloader, Home , Main , Pause, End],
     });
 });
  

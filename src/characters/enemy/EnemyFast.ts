@@ -3,6 +3,7 @@ import { Enemy } from "./Enemy";
 
 export class EnemyFast extends Enemy {
   hp: number = 1; // 敌机Fast的生命值
+  maxHp: number = 1; //敌机最大生命值
   score: number = 3; //敌机B的分数
   exp: number = 2;
   constructor(scene: Scene, x: number, y: number) {
@@ -13,9 +14,10 @@ export class EnemyFast extends Enemy {
   born() {
     let x = Math.Between(30, 345);
     let y = Math.Between(-20, -40);
-    this.hp = 1;
+    this.hp = this.maxHp;
     this.enableBody(true, x, y, true, true);
     this.setVelocityY(500);
+    console.log("敌机Fast生成血量为", this.hp);
   }
   //敌机受到伤害
   takeDamage(damage: number): void {
