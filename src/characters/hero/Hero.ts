@@ -64,13 +64,51 @@ export abstract class Hero extends Physics.Arcade.Sprite {
         if (this.level === 1) {
           const bullet = this.bullets.getFirstDead();
           bullet.fire(this.x, this.y - 32);
-        } else if (this.level >= 2) {
+        }
+        else if (this.level === 2) {
           for (let i = 0; i < 2; i++) {
             const bullet = this.bullets.getFirstDead();
             if (i === 0) {     
               bullet.fire(this.x - 10, this.y - 32);
             } else if (i === 1) {
               bullet.fire(this.x + 10, this.y - 32);
+            }
+          }
+        }
+        else if (this.level >= 3 &&this.level <= 4) {
+          for (let i = 0; i < 4; i++) {
+            const bullet = this.bullets.getFirstDead();
+            if (i === 0) {     
+              bullet.fire(this.x - 25, this.y - 15);
+            }
+            else if (i === 1) {
+              bullet.fire(this.x - 10, this.y - 32);
+            }
+            else if (i === 2) {
+              bullet.fire(this.x + 10, this.y - 32);
+            }
+            else if (i === 3) {
+              bullet.fire(this.x + 25, this.y - 15);
+            }
+          }
+        }
+        else {
+          for (let i = 0; i < 5; i++) {
+            const bullet = this.bullets.getFirstDead();
+            if (i === 0) {     
+              bullet.fire(this.x - 25, this.y - 15);
+            }
+            else if (i === 1) {
+              bullet.fire(this.x - 10, this.y - 30);
+            }
+            else if (i === 2) {
+              bullet.fire(this.x, this.y - 45);
+            }
+            else if (i === 3) {
+              bullet.fire(this.x + 10, this.y - 30);
+            }
+            else if (i === 4) {
+              bullet.fire(this.x + 25, this.y - 15);
             }
           }
         }
@@ -81,7 +119,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   }
   growExp(value: number) {
     this.exp += value;
-    if (this.level < 6) {
+    if (this.level < 5) {
       const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
       if (newLevel > this.level) {
         //英雄升级

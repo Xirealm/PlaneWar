@@ -191,15 +191,15 @@ export class Main extends Scene {
     switch (type) {
       case "enemyA":
         enemy = enemiesA.getFirstDead(false); // 获取一个非活跃的敌机A对象
-        console.log("敌机A上场");
+        // console.log("敌机A上场");
         break;
       case "enemyB":
         enemy = enemiesB.getFirstDead(false); // 获取一个非活跃的敌机B对象
-        console.log("敌机B上场");
+        // console.log("敌机B上场");
         break;
       case "enemyFast":
         enemy = enemiesFast.getFirstDead(false); // 获取一个非活跃的敌机C对象
-        console.log("敌机Fast上场");
+        // console.log("敌机Fast上场");
         break;
       default:
         console.log("没有这个类型");
