@@ -1,8 +1,15 @@
 import { Scene } from "phaser";
 import backgroundImg from "../assets/image/bg/mainBg.jpg";
+import homeBackgroundImg from "../assets/image/interface/homeBg.jpg";
 import gameBackgroundImg1 from "../assets/image/bg/bg0.jpg"
 import titleImg from "../assets/image/interface/title.png"
 import beginBtnImg from "../assets/image/interface/beginBtn.png";
+
+import tabBarImg from "../assets/image/interface/tabBar.png"
+import beginTabImg from "../assets/image/interface/beginTab.png"
+import rankTabImg from "../assets/image/interface/rankTab.png"
+import myTabImg from "../assets/image/interface/myTab.png"
+
 import enemyAImg from "../assets/image/enemy/enemy1.png";
 import enemyBImg from "../assets/image/enemy/enemy2.png";
 import enemyFastImg from "../assets/image/enemy/enemy11.png";
@@ -16,6 +23,8 @@ import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
 import supplyExpImg from "../assets/image/hero/article1.png"
+import numberImg from "../assets/image/interface/number.png"
+
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
 // import bulletAudio from "../assets/audio/bullet.mp3";
@@ -43,11 +52,18 @@ export class Preloader extends Scene {
     this.load.image("heroB", heroBImg);
     this.load.image("bulletA", bulletAImg);
     this.load.image("supplyExp", supplyExpImg);
+    //加载Home页资源
+    this.load.image("homeBackground", homeBackgroundImg);
+    this.load.image("tabBarBackground", tabBarImg);
+    this.load.image("rankTab", rankTabImg);
+    this.load.image("beginTab", beginTabImg);
+    this.load.image("myTab", myTabImg);
     // 加载音频资源
     this.load.audio("bgm", bgmAudio);
     this.load.audio("boom", boomAudio);
     //加载纹理图集
     this.load.atlas("boom", boomImg, boomJson);
+    this.load.spritesheet("number", numberImg, { frameWidth: 64, frameHeight: 88 })
   }
   // preload中的资源全部加载完成后执行
   create() {
@@ -69,7 +85,7 @@ export class Preloader extends Scene {
         // 点击事件：关闭当前场景，打开Main场景
         // 背景音乐
         this.sound.play("bgm");
-        this.scene.start("Main");
+        this.scene.start("Home");
       })
       .setOrigin(0.5);
     // 创建爆炸动画

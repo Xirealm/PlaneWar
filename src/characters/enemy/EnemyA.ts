@@ -18,7 +18,7 @@ export class EnemyA extends Enemy {
   }
     takeDamage(damage: number): void {
         this.hp -= damage;
-        console.log("EnemyA被攻击，剩余血量：", this.hp);
+        // console.log("EnemyA被攻击，剩余血量：", this.hp);
     }
     killed():void{
         this.disableBody(true, true);

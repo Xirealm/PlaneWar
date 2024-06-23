@@ -1,6 +1,5 @@
-const BASE_EXP_TO_LEVEL_UP = 2; // 初始升级所需经验值
+const BASE_EXP_TO_LEVEL_UP = 10; // 初始升级所需经验值
 const EXP_INCREASE_RATE = 2; // 每级所需经验值增长率
-
 export const expRequiredToLevel = (level: number): number => {
   if (level === 1) {
     return 0;
@@ -10,7 +9,6 @@ export const expRequiredToLevel = (level: number): number => {
   );
   return exp;
 }
-
 /**
  * 计算当前经验值对应的等级和剩余经验值
  * @param currentExp 当前经验值

@@ -3,7 +3,7 @@ import { Scene, Physics } from "phaser";
 export abstract class Bullet extends Physics.Arcade.Sprite {
   damage: number; // 子弹造成的伤害
   size: number = 0.5; // 子弹初始大小
-  fireVelocity: number = 200; // 子弹飞机速度
+  fireVelocity: number = 300; // 子弹飞机速度
   constructor(scene: Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
     // 初始化子弹逻辑

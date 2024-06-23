@@ -7,9 +7,10 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   hp: number = 3; // 英雄的生命值
   hpMax: number = 3; // 英雄的生命值上限
   exp: number = 0; // 英雄的经验值
+  expToNextLevel :number = 0;
   energy: number = 100; // 英雄的能量值
   bullets: Physics.Arcade.Group; //英雄的子弹组
-  fireFrequency: number = 500; // 子弹的发射频率
+  fireFrequency: number = 400; // 子弹的发射频率
   isDown: boolean = false;
   downX: number;
   downY: number;
@@ -33,10 +34,10 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   }
   //注册事件
   addEvent() {
-    this.initMoveEvent()
+    this.initMoveEvent();
     this.initFireEvent();
   }
-  initMoveEvent(){
+  initMoveEvent() {
     // 手指按下我方飞机
     this.on("pointerdown", () => {
       this.isDown = true;
@@ -55,7 +56,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       }
     });
   }
-  initFireEvent(){
+  initFireEvent() {
     // 定时器 每1秒发射子弹
     this.fireEvent = this.scene.time.addEvent({
       //子弹发射频率
@@ -64,50 +65,40 @@ export abstract class Hero extends Physics.Arcade.Sprite {
         if (this.level === 1) {
           const bullet = this.bullets.getFirstDead();
           bullet.fire(this.x, this.y - 32);
-        }
-        else if (this.level === 2) {
+        } else if (this.level === 2) {
           for (let i = 0; i < 2; i++) {
             const bullet = this.bullets.getFirstDead();
-            if (i === 0) {     
+            if (i === 0) {
               bullet.fire(this.x - 10, this.y - 32);
             } else if (i === 1) {
               bullet.fire(this.x + 10, this.y - 32);
             }
           }
-        }
-        else if (this.level >= 3 &&this.level <= 4) {
+        } else if (this.level >= 3 && this.level <= 4) {
           for (let i = 0; i < 4; i++) {
             const bullet = this.bullets.getFirstDead();
-            if (i === 0) {     
+            if (i === 0) {
               bullet.fire(this.x - 25, this.y - 15);
-            }
-            else if (i === 1) {
+            } else if (i === 1) {
               bullet.fire(this.x - 10, this.y - 32);
-            }
-            else if (i === 2) {
+            } else if (i === 2) {
               bullet.fire(this.x + 10, this.y - 32);
-            }
-            else if (i === 3) {
+            } else if (i === 3) {
               bullet.fire(this.x + 25, this.y - 15);
             }
           }
-        }
-        else {
+        } else {
           for (let i = 0; i < 5; i++) {
             const bullet = this.bullets.getFirstDead();
-            if (i === 0) {     
+            if (i === 0) {
               bullet.fire(this.x - 25, this.y - 15);
-            }
-            else if (i === 1) {
+            } else if (i === 1) {
               bullet.fire(this.x - 10, this.y - 30);
-            }
-            else if (i === 2) {
+            } else if (i === 2) {
               bullet.fire(this.x, this.y - 45);
-            }
-            else if (i === 3) {
+            } else if (i === 3) {
               bullet.fire(this.x + 10, this.y - 30);
-            }
-            else if (i === 4) {
+            } else if (i === 4) {
               bullet.fire(this.x + 25, this.y - 15);
             }
           }
@@ -121,6 +112,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
     this.exp += value;
     if (this.level < 5) {
       const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
+      this.expToNextLevel = expToNextLevel;
       if (newLevel > this.level) {
         //英雄升级
         this.upgrade(newLevel);
@@ -129,13 +121,13 @@ export abstract class Hero extends Physics.Arcade.Sprite {
           (bullet as Bullet).upgrade(newLevel);
         });
       } else {
-        console.log(
-          "距离升到",
-          newLevel + 1,
-          "级还差",
-          expToNextLevel,
-          "经验值"
-        );
+        // console.log(
+        //   "距离升到",
+        //   newLevel + 1,
+        //   "级还差",
+        //   expToNextLevel,
+        //   "经验值"
+        // );
       }
     }
   }

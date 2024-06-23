@@ -19,7 +19,7 @@ export class EnemyB extends Enemy {
   //敌机受到伤害
   takeDamage(damage: number): void {
     this.hp -= damage;
-    console.log("EnemyB被攻击，剩余血量：", this.hp);
+    // console.log("EnemyB被攻击，剩余血量：", this.hp);
   }
   //敌机被杀死
   killed(): void {

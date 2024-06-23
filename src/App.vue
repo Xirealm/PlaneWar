@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted } from "vue";
 import { Game, AUTO, Scale } from "phaser";
 import { Preloader } from "./game/Preloader";
+import { Home } from "./game/Home";
 import { Main } from "./game/Main";
 import { End } from "./game/End";
 
@@ -25,7 +26,7 @@ onMounted(() => {
                 debug: false,
             },
         },
-        scene: [Preloader, Main, End],
+        scene: [Preloader, Home , Main, End],
     });
 });
  

@@ -29,15 +29,22 @@ let bulletsA: Physics.Arcade.Group;
 let suppliesExp: Physics.Arcade.Group;
 let booms: GameObjects.Group;
 let scoreText: GameObjects.Text;
+let expToNextLevelText: GameObjects.Text;
 // 场景数据
 let score: number;
+let scoreGroup: GameObjects.Group;
+let expToNextLevel: number
 
 export class Main extends Scene {
+  width: number;
+  height: number;
   constructor() {
     super("Main");
   }
   create() {
     const { width, height } = this.cameras.main;
+    this.width = width;
+    this.height = height;
     // 背景
     background = this.add
       .tileSprite(0, 0, width, height, "gameBackground1")
@@ -125,21 +132,36 @@ export class Main extends Scene {
     });
     // 为英雄机设置子弹
     hero.setBullets(bulletsA);
-    // 分数
+    //初始化分数;
     score = 0;
-    scoreText = this.add.text(10, 10, "0", {
-      fontFamily: "Arial",
-      fontSize: 20,
-    });
-
+    scoreGroup = this.add.group(); // 创建一个Group来存放所有数字
+    expToNextLevel = 0;
+    this.add
+      .text(width / 2, 50, "升级进度", {
+        fontFamily: "Arial",
+        fontSize: 10,
+      })
+      .setOrigin(0.5);
+    expToNextLevelText = this.add
+      .text(width / 2, 50, "0", {
+        fontFamily: "Arial",
+        fontSize: 20,
+      })
+      .setOrigin(0.5);
+    // this.add
+    //   .sprite(width - 50, 10, "number", 0)
+    //   .setOrigin(1, 0)
+    //   .setScale(0.3);
     this.addEvent();
   }
   //注册事件
   addEvent() {
     this.time.addEvent({
-      delay: 2000, // 定时器 每2秒生成敌人
+      delay: 2000, // 定时器 每2秒生成2个敌人
       callback: () => {
-        this.spawnEnemy("enemyA");
+        for (let i = 0; i < 2; i++){
+          this.spawnEnemy("enemyA");
+        }
       },
       callbackScope: this,
       loop: true, // 循环生成
@@ -240,7 +262,7 @@ export class Main extends Scene {
   }
   // 子弹击中敌军
   hit(bullet, enemy) {
-    console.log("子弹击中敌机,伤害为" + bullet.damage);
+    // console.log("子弹击中敌机,伤害为" + bullet.damage);
     bullet.disableBody(true, true); //销毁子弹
     enemy.takeDamage(bullet.damage); //对敌机减血
     if (enemy.hp <= 0) {
@@ -252,10 +274,30 @@ export class Main extends Scene {
     enemy.killed();
     // 显示爆炸
     booms.getFirstDead()?.show(enemy.x, enemy.y);
-    console.log("子弹击杀敌机");
-    // 分数增长
-    scoreText.text = String((score += enemy.score));
+    // console.log("子弹击杀敌机");
+    // 分数更新
+    score += enemy.score;
+    // 升级到下一级所需经验更新
+    expToNextLevelText.text = String(hero.expToNextLevel);
     hero.growExp(enemy.exp);
+  }
+  updateDisplayScore() {
+    // 清除原有的数字精灵
+    scoreGroup.getChildren().forEach((item) => {
+      item.destroy();
+    });
+    const position = { x: this.width - 50, y: 10 };
+    let scoreStr = score.toString();
+    for (let i = scoreStr.length - 1; i >= 0; i--) {
+      const digit = parseInt(scoreStr[i]);
+      const sprite = this.add
+        .sprite(position.x, position.y, "number", digit)
+        .setScale(0.3) // 调整大小
+        .setOrigin(1, 0); // 设置向右上角对齐
+      scoreGroup.add(sprite); // 将精灵添加到Group中
+      position.x -= 20;
+    }
+    // scoreText.text = String((score += value));
   }
   // 游戏结束
   gameOver() {
@@ -270,11 +312,14 @@ export class Main extends Scene {
   getSupply(hero, supply) {
     console.log("吃到了补给" + supply.supplyType);
     hero.growExp(supply.takeSupply());
+    // 升级到下一级所需经验更新
+    expToNextLevelText.text = String(hero.expToNextLevel);
     console.log("英雄当前经验值为：", hero.exp);
   }
 
   // 每一帧的回调
   update() {
     background.tilePositionY -= 1;
+    this.updateDisplayScore();
   }
 }
