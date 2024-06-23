@@ -15,7 +15,7 @@ export class EnemyFast extends Enemy {
     let y = Math.Between(-20, -40);
     this.hp = 1;
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(400);
+    this.setVelocityY(500);
   }
   //敌机受到伤害
   takeDamage(damage: number): void {

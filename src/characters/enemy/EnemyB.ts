@@ -10,11 +10,11 @@ export class EnemyB extends Enemy {
   }
   //敌机生成
   born() {
-    let x = Math.Between(30, 345);
-    let y = Math.Between(-20, -40);
+    let x = Math.Between(0, 345);
+    let y = Math.Between(-this.height, -this.height*2);
     this.hp = 2;
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(80);
+    this.setVelocityY(100);
   }
   //敌机受到伤害
   takeDamage(damage: number): void {

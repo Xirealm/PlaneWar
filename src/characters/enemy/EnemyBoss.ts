@@ -2,20 +2,20 @@ import { Scene, Math } from "phaser";
 import { Enemy } from "./Enemy";
 
 export class EnemyBoss extends Enemy {
-  hp: number = 10; // 敌机Boss的生命值
-  score: number = 20; //敌机B的分数
-  exp: number = 5;
+  hp: number = 500; // 敌机Boss的生命值
+  score: number = 50; //敌机B的分数
+  exp: number = 10;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, "enemyBoss");
-    this.setScale(0.5);
+    this.setScale(0.8);
   }
   //敌机生成
   born() {
-    let x = Math.Between(30, 345);
-    let y = Math.Between(-20, -40);
-    this.hp = 10;
+    let x = Math.Between(0, 300);
+    let y = Math.Between(-this.height, -this.height*2);
+    this.hp = 500;
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(70);
+    this.setVelocityY(80);
   }
   //敌机受到伤害
   takeDamage(damage: number): void {

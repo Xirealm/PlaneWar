@@ -8,6 +8,7 @@ import { Enemy } from "../characters/enemy/Enemy"
 import { EnemyA } from "../characters/enemy/EnemyA"
 import { EnemyB } from "../characters/enemy/EnemyB"
 import { EnemyFast } from "../characters/enemy/EnemyFast"
+import { EnemyBoss } from "../characters/enemy/EnemyBoss"
 
 import { BulletFactory } from "../characters/bullet/BulletFactory";
 import { Bullet } from "../characters/bullet/Bullet"
@@ -27,6 +28,7 @@ let background: GameObjects.TileSprite;
 let enemiesA: Physics.Arcade.Group;
 let enemiesB: Physics.Arcade.Group;
 let enemiesFast: Physics.Arcade.Group;
+let enemiesBoss: Physics.Arcade.Group;
 let bulletsA: Physics.Arcade.Group;
 let suppliesExp: Physics.Arcade.Group;
 let suppliesHp: Physics.Arcade.Group;
@@ -60,12 +62,12 @@ export class Main extends Scene {
     // 定义子弹A对象池
     bulletsA = this.physics.add.group({
       classType: BulletA,
-      maxSize: 100, // 子弹A对象池的最大数量
+      maxSize: 500, // 子弹A对象池的最大数量
       enable: false,
       immovable: false,
     });
     // 初始化子弹A对象池
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 500; i++) {
       let bullet = BulletFactory.createBullet(this, "BulletA");
       bullet.setVisible(false);
       bullet.setActive(false);
@@ -103,8 +105,6 @@ export class Main extends Scene {
     enemiesFast = this.physics.add.group({
       classType: EnemyFast,
       maxSize: 20, // 敌机Fast对象池的最大数量
-      active: false,
-      visible: false,
       enable: false,
       immovable: true,
     });
@@ -113,6 +113,19 @@ export class Main extends Scene {
       let enemy = EnemyFactory.createEnemy(this, "EnemyFast");
       enemy.disableBody(true, true);
       enemiesFast.add(enemy);
+    }
+    // 定义敌机Boss对象池
+    enemiesBoss = this.physics.add.group({
+      classType: EnemyBoss,
+      maxSize: 5, // 敌机Boss对象池的最大数量
+      enable: false,
+      immovable: true,
+    });
+    // 初始化敌机Boss对象池
+    for (let i = 0; i < enemiesBoss.maxSize; i++) {
+      let enemy = EnemyFactory.createEnemy(this, "EnemyBoss");
+      enemy.disableBody(true, true);
+      enemiesBoss.add(enemy);
     }
     // 定义经验补给对象池
     suppliesExp = this.physics.add.group({
@@ -201,9 +214,9 @@ export class Main extends Scene {
   //注册事件
   addEvent() {
     this.time.addEvent({
-      delay: 1500, // 定时器 每1.5秒生成2个敌人
+      delay: 1500, // 定时器 每1.5秒生成3个敌机
       callback: () => {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 3; i++) {
           this.spawnEnemy("enemyA");
         }
       },
@@ -261,12 +274,16 @@ export class Main extends Scene {
     this.physics.add.overlap(bulletsA, enemiesB, this.hit, null, this);
     // 子弹A和敌机Fast碰撞
     this.physics.add.overlap(bulletsA, enemiesFast, this.hit, null, this);
+    // 子弹A和敌机Boss碰撞
+    this.physics.add.overlap(bulletsA, enemiesBoss, this.hit, null, this);
     // 玩家和敌机A碰撞
     this.physics.add.overlap(hero, enemiesA, this.injured, null, this);
     // 玩家和敌机B碰撞
     this.physics.add.overlap(hero, enemiesB, this.injured, null, this);
     // 玩家和敌机Fast碰撞
     this.physics.add.overlap(hero, enemiesFast, this.injured, null, this);
+    // 玩家和敌机Boss碰撞
+    this.physics.add.overlap(hero, enemiesBoss, this.injured, null, this);
     // 玩家拾取经验补给（碰撞）
     this.physics.add.overlap(hero, suppliesExp, this.getSupply, null, this);
     // 玩家拾取生命补给（碰撞）
@@ -287,6 +304,10 @@ export class Main extends Scene {
         break;
       case "enemyFast":
         enemy = enemiesFast.getFirstDead(false); // 获取一个非活跃的敌机C对象
+        // console.log("敌机Fast上场");
+        break;
+      case "enemyBoss":
+        enemy = enemiesBoss.getFirstDead(false); // 获取一个非活跃的敌机C对象
         // console.log("敌机Fast上场");
         break;
       default:
@@ -331,6 +352,9 @@ export class Main extends Scene {
     }
     for (let i = 0; i < 3; i++) {
       this.spawnEnemy("enemyFast");
+    }
+    if (hero.level >=3) {
+      this.spawnEnemy("enemyBoss");
     }
     // 例如，更新UI、播放音效、增加分数等
   }
@@ -386,6 +410,7 @@ export class Main extends Scene {
     if (hero.hp <= 0) {
       // 显示爆炸
       booms.getFirstDead()?.show(enemy.x, enemy.y);
+      
       hero.disableBody(true, true);
       this.gameOver();
     }

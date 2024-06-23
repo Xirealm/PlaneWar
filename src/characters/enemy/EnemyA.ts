@@ -6,15 +6,15 @@ export class EnemyA extends Enemy {
     score:number = 1; //敌机A的分数
     exp:number = 1;
     constructor(scene: Scene, x: number, y: number) {
-        super(scene, x, y, "enemyA");
+      super(scene, x, y, "enemyA");
     }
     //生成敌军
   born() {
     let x = Math.Between(30, 345);
-    let y = Math.Between(-20, -40);
+    let y = Math.Between(-this.height, -this.height * 5);
     this.hp = 1;
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(Math.Between(100, 150));
+    this.setVelocityY(125);
   }
     takeDamage(damage: number): void {
         this.hp -= damage;
