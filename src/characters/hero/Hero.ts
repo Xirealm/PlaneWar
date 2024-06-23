@@ -3,12 +3,13 @@ import { Bullet } from "../bullet/Bullet";
 import { calcLevelAndRemainingExp } from "../../utils/level";
 
 export abstract class Hero extends Physics.Arcade.Sprite {
-  level: number = 1;
   hp: number = 3; // 英雄的生命值
-  hpMax: number = 3; // 英雄的生命值上限
+  maxHp: number = 5; // 英雄的生命值上限
+  level: number = 1;
   exp: number = 0; // 英雄的经验值
-  expToNextLevel :number = 0;
-  energy: number = 100; // 英雄的能量值
+  expToNextLevel: number = 0;
+  maxPow: number = 10; // 英雄的能量值上限
+  pow: number = 0; // 英雄的能量值
   bullets: Physics.Arcade.Group; //英雄的子弹组
   fireFrequency: number = 400; // 子弹的发射频率
   isDown: boolean = false;
@@ -109,26 +110,50 @@ export abstract class Hero extends Physics.Arcade.Sprite {
     });
   }
   growExp(value: number) {
+    if (this.level === 5) return;
     this.exp += value;
-    if (this.level < 5) {
-      const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
-      this.expToNextLevel = expToNextLevel;
-      if (newLevel > this.level) {
-        //英雄升级
-        this.upgrade(newLevel);
-        //子弹升级
-        this.bullets.getChildren().forEach((bullet) => {
-          (bullet as Bullet).upgrade(newLevel);
-        });
-      } else {
-        // console.log(
-        //   "距离升到",
-        //   newLevel + 1,
-        //   "级还差",
-        //   expToNextLevel,
-        //   "经验值"
-        // );
-      }
+    const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
+    this.expToNextLevel = expToNextLevel;
+    if (newLevel > this.level) {
+      //英雄升级
+      this.upgrade(newLevel);
+      //子弹升级
+      this.bullets.getChildren().forEach((bullet) => {
+        (bullet as Bullet).upgrade(newLevel);
+      });
+      // console.log("距离升到",newLevel + 1,"级还差",expToNextLevel,"经验值");
+    }
+  }
+  /**
+   * 补给生命方法
+   * @param value 补给生命值
+   */
+  supplyHp(value: number): void {
+    if (this.hp === this.maxHp) return;
+    this.hp += value;
+  }
+  /**
+   * 减少生命方法
+   * @param value 补给生命值
+   * @returns boolean 英雄是否死亡
+   */
+  reduceHp(value: number): void{
+    if (this.hp <= 0) return;
+    this.pow = 0;
+    this.hp -= value;
+  }
+  /**
+   * 增加能量方法
+   * @param value 补给能量值
+   */
+  addPow(value: number): void{
+    if (this.pow >= this.maxPow) {
+      return
+    }
+    this.pow += value;
+    if (this.pow >= this.maxPow) {
+      this.pow = this.maxPow;
+      console.log("能量已满");
     }
   }
   //升级方法

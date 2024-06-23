@@ -16,6 +16,8 @@ import { BulletA } from "../characters/bullet/BulletA";
 import { SupplyFactory } from "../characters/supply/SupplyFactory";
 import { Supply } from "../characters/supply/Supply"
 import { SupplyExp } from "../characters/supply/SupplyExp";
+import { SupplyHp } from "../characters/supply/SupplyHp";
+import { SupplyPow } from "../characters/supply/SupplyPow";
 
 import { Boom } from "../characters/boom/Boom";
 
@@ -27,12 +29,15 @@ let enemiesB: Physics.Arcade.Group;
 let enemiesFast: Physics.Arcade.Group;
 let bulletsA: Physics.Arcade.Group;
 let suppliesExp: Physics.Arcade.Group;
+let suppliesHp: Physics.Arcade.Group;
+let suppliesPow: Physics.Arcade.Group;
 let booms: GameObjects.Group;
-let scoreText: GameObjects.Text;
+let scoreGroup: GameObjects.Group;
 let expToNextLevelText: GameObjects.Text;
+let hpText: GameObjects.Text;
+let powText: GameObjects.Text;
 // 场景数据
 let score: number;
-let scoreGroup: GameObjects.Group;
 let expToNextLevel: number
 
 export class Main extends Scene {
@@ -122,6 +127,32 @@ export class Main extends Scene {
       supplyExp.disableBody(true, true);
       suppliesExp.add(supplyExp);
     }
+    // 定义生命补给对象池
+    suppliesHp = this.physics.add.group({
+      classType: SupplyHp,
+      maxSize: 3, // 生命补给对象池的最大数量
+      enable: false,
+      immovable: true,
+    });
+    // 初始化生命补给对象池
+    for (let i = 0; i < suppliesHp.maxSize; i++) {
+      let supplyHp = SupplyFactory.createSupply(this, "SupplyHp");
+      supplyHp.disableBody(true, true);
+      suppliesHp.add(supplyHp);
+    }
+    // 定义能力补给对象池
+    suppliesPow = this.physics.add.group({
+      classType: SupplyPow,
+      maxSize: 3, // 生命补给对象池的最大数量
+      enable: false,
+      immovable: true,
+    });
+    // 初始化能量补给对象池
+    for (let i = 0; i < suppliesPow.maxSize; i++) {
+      let supplyPow = SupplyFactory.createSupply(this, "SupplyPow");
+      supplyPow.disableBody(true, true);
+      suppliesPow.add(supplyPow);
+    }
     // 爆炸
     booms = this.add.group({
       classType: Boom,
@@ -148,18 +179,31 @@ export class Main extends Scene {
         fontSize: 20,
       })
       .setOrigin(0.5);
-    // this.add
-    //   .sprite(width - 50, 10, "number", 0)
-    //   .setOrigin(1, 0)
-    //   .setScale(0.3);
+    const hpLabel = this.add.text(0, 10, "生命值", {
+      fontFamily: "Arial",
+      fontSize: 20,
+    });
+    hpText = this.add.text(hpLabel.width, 10, String(hero.hp), {
+      fontFamily: "Arial",
+      fontSize: 20,
+    });
+    const powLabel = this.add.text(0, 50, "能量值", {
+      fontFamily: "Arial",
+      fontSize: 20,
+    });
+    powText = this.add.text(hpLabel.width, 50, String(hero.pow), {
+      fontFamily: "Arial",
+      fontSize: 20,
+    });
+    //调用注册事件
     this.addEvent();
   }
   //注册事件
   addEvent() {
     this.time.addEvent({
-      delay: 2000, // 定时器 每2秒生成2个敌人
+      delay: 1500, // 定时器 每1.5秒生成2个敌人
       callback: () => {
-        for (let i = 0; i < 2; i++){
+        for (let i = 0; i < 2; i++) {
           this.spawnEnemy("enemyA");
         }
       },
@@ -167,7 +211,7 @@ export class Main extends Scene {
       loop: true, // 循环生成
     });
     this.time.addEvent({
-      delay: Math.Between(3000, 5000), // 定时器 每3-8秒生成1个敌机B
+      delay: Math.Between(3000, 4000), // 定时器 每3-4秒生成1个敌机B
       callback: () => {
         this.spawnEnemy("enemyB");
       },
@@ -175,7 +219,7 @@ export class Main extends Scene {
       loop: true, // 循环生成
     });
     this.time.addEvent({
-      delay: Math.Between(5000, 10000), // 定时器 每5-10秒生成1个Fast敌机
+      delay: Math.Between(4000, 8000), // 定时器 每4-8秒生成1个Fast敌机
       callback: () => {
         this.spawnEnemy("enemyFast");
       },
@@ -191,6 +235,24 @@ export class Main extends Scene {
       callbackScope: this,
       loop: true, // 循环生成
     });
+    //掉落生命补给
+    this.time.addEvent({
+      delay: Math.Between(10000, 20000), // 定时器 每10-20秒掉落1个生命补给
+      callback: () => {
+        this.spawnSupply("supplyHp");
+      },
+      callbackScope: this,
+      loop: true, // 循环生成
+    });
+    //掉落能量补给
+    this.time.addEvent({
+      delay: Math.Between(5000, 10000), // 定时器 每5-10秒掉落1个生命补给
+      callback: () => {
+        this.spawnSupply("supplyPow");
+      },
+      callbackScope: this,
+      loop: true, // 循环生成
+    });
     // 监听英雄升级事件
     this.events.on("heroUpgrade", this.onHeroUpgrade, this);
     // 子弹A和敌机A碰撞
@@ -200,13 +262,17 @@ export class Main extends Scene {
     // 子弹A和敌机Fast碰撞
     this.physics.add.overlap(bulletsA, enemiesFast, this.hit, null, this);
     // 玩家和敌机A碰撞
-    this.physics.add.overlap(hero, enemiesA, this.gameOver, null, this);
+    this.physics.add.overlap(hero, enemiesA, this.injured, null, this);
     // 玩家和敌机B碰撞
-    this.physics.add.overlap(hero, enemiesB, this.gameOver, null, this);
+    this.physics.add.overlap(hero, enemiesB, this.injured, null, this);
     // 玩家和敌机Fast碰撞
-    this.physics.add.overlap(hero, enemiesFast, this.gameOver, null, this);
-    // 玩家和经验补给碰撞
+    this.physics.add.overlap(hero, enemiesFast, this.injured, null, this);
+    // 玩家拾取经验补给（碰撞）
     this.physics.add.overlap(hero, suppliesExp, this.getSupply, null, this);
+    // 玩家拾取生命补给（碰撞）
+    this.physics.add.overlap(hero, suppliesHp, this.getSupply, null, this);
+    // 玩家拾取能量补给（碰撞）
+    this.physics.add.overlap(hero, suppliesPow, this.getSupply, null, this);
   }
   spawnEnemy(type: string) {
     let enemy: Enemy;
@@ -238,6 +304,14 @@ export class Main extends Scene {
         supply = suppliesExp.getFirstDead(false); // 获取一个非活跃的敌机A对象
         console.log("经验补给出现");
         break;
+      case "supplyHp":
+        supply = suppliesHp.getFirstDead(false); // 获取一个非活跃的敌机A对象
+        console.log("生命补给出现");
+        break;
+      case "supplyPow":
+        supply = suppliesPow.getFirstDead(false); // 获取一个非活跃的敌机A对象
+        console.log("能量补给出现");
+        break;
       default:
         new Error("没有这个补给类型");
         return;
@@ -249,13 +323,13 @@ export class Main extends Scene {
   onHeroUpgrade(hero) {
     // 处理英雄升级后的逻辑
     console.log("英雄升级！！！！！！！！！！！！！！！！！！！", hero);
-    for (let i = 0; i < 10; i++){
+    for (let i = 0; i < 10; i++) {
       this.spawnEnemy("enemyA");
     }
-    for (let i = 0; i < 5; i++){
+    for (let i = 0; i < 5; i++) {
       this.spawnEnemy("enemyB");
     }
-    for (let i = 0; i < 3; i++){
+    for (let i = 0; i < 3; i++) {
       this.spawnEnemy("enemyFast");
     }
     // 例如，更新UI、播放音效、增加分数等
@@ -299,6 +373,24 @@ export class Main extends Scene {
     }
     // scoreText.text = String((score += value));
   }
+  /**
+   * 英雄受到伤害
+   * @param hero 玩家
+   */
+  injured(hero, enemy) {
+    // 将敌机销毁
+    enemy.killed();
+    hero.reduceHp(1)
+    hpText.text = String(hero.hp);
+    powText.text = String(hero.pow);
+    if (hero.hp <= 0) {
+      // 显示爆炸
+      booms.getFirstDead()?.show(enemy.x, enemy.y);
+      hero.disableBody(true, true);
+      this.gameOver();
+    }
+
+  }
   // 游戏结束
   gameOver() {
     // 暂停当前场景，并没有销毁
@@ -310,11 +402,25 @@ export class Main extends Scene {
   }
   // 补给
   getSupply(hero, supply) {
-    console.log("吃到了补给" + supply.supplyType);
-    hero.growExp(supply.takeSupply());
-    // 升级到下一级所需经验更新
-    expToNextLevelText.text = String(hero.expToNextLevel);
-    console.log("英雄当前经验值为：", hero.exp);
+    switch (supply.supplyType) {
+      case "Exp":
+        console.log("吃到了经验补给");
+        hero.growExp(supply.takeSupply());
+        // 升级到下一级所需经验更新
+        expToNextLevelText.text = String(hero.expToNextLevel);
+        // console.log("英雄当前经验值为：", hero.exp);
+        break;
+      case "Hp":
+        console.log("吃到了生命补给");
+        hero.supplyHp(supply.takeSupply());
+        hpText.text = String(hero.hp);
+        break;
+      case "Pow":
+        console.log("吃到了能量补给");
+        hero.addPow(supply.takeSupply());
+        powText.text = String(hero.pow);
+        break;
+    }
   }
 
   // 每一帧的回调

@@ -13,6 +13,8 @@ import myTabImg from "../assets/image/interface/myTab.png"
 import enemyAImg from "../assets/image/enemy/enemy1.png";
 import enemyBImg from "../assets/image/enemy/enemy2.png";
 import enemyFastImg from "../assets/image/enemy/enemy11.png";
+import enemyBossImg from "../assets/image/enemy/boss.png";
+
 import heroAImg from "../assets/image/hero/hero01.png";
 import heroALevel2Img from "../assets/image/hero/hero02.png";
 import heroALevel3Img from "../assets/image/hero/hero03.png";
@@ -22,7 +24,11 @@ import heroBImg from "../assets/image/hero/hero_b_1.png";
 import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
+
 import supplyExpImg from "../assets/image/hero/article1.png"
+import supplyHpImg from "../assets/image/hero/hero_blood.png"
+import supplyPowImg from "../assets/image/hero/article2.png"
+
 import numberImg from "../assets/image/interface/number.png"
 
 import bgmAudio from "../assets/audio/game_music.ogg";
@@ -44,6 +50,7 @@ export class Preloader extends Scene {
     this.load.image("enemyA", enemyAImg);
     this.load.image("enemyB", enemyBImg);
     this.load.image("enemyFast", enemyFastImg);
+    this.load.image("enemyBoss", enemyBossImg);
     this.load.image("heroA", heroAImg);
     this.load.image("heroALevel2", heroALevel2Img);
     this.load.image("heroALevel3", heroALevel3Img);
@@ -51,7 +58,10 @@ export class Preloader extends Scene {
     this.load.image("heroALevel5", heroALevel5Img);
     this.load.image("heroB", heroBImg);
     this.load.image("bulletA", bulletAImg);
+    //加载补给图片资源
     this.load.image("supplyExp", supplyExpImg);
+    this.load.image("supplyHp", supplyHpImg);
+    this.load.image("supplyPow", supplyPowImg);
     //加载Home页资源
     this.load.image("homeBackground", homeBackgroundImg);
     this.load.image("tabBarBackground", tabBarImg);
