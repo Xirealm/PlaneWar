@@ -1,9 +1,9 @@
 import { Physics, Scene,Time } from "phaser";
 import { Bullet } from "../bullet/Bullet";
-import { calcLevelAndRemainingExp } from "../../utils/level";
+import { calcLevelAndRemainingExp,expRequiredToLevel } from "../../utils/level";
 
 export abstract class Hero extends Physics.Arcade.Sprite {
-  hp: number = 3; // 英雄的生命值
+  hp: number = 5; // 英雄的生命值
   maxHp: number = 5; // 英雄的生命值上限
   level: number = 1;
   exp: number = 0; // 英雄的经验值
@@ -16,7 +16,6 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   downX: number;
   downY: number;
   fireEvent: Time.TimerEvent;
-
   constructor(scene: Scene, texture: string) {
     // 创建对象
     const { width, height } = scene.cameras.main;
@@ -137,7 +136,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
    * @param value 补给生命值
    * @returns boolean 英雄是否死亡
    */
-  reduceHp(value: number): void{
+  reduceHp(value: number): void {
     if (this.hp <= 0) return;
     this.pow = 0;
     this.hp -= value;
@@ -146,9 +145,9 @@ export abstract class Hero extends Physics.Arcade.Sprite {
    * 增加能量方法
    * @param value 补给能量值
    */
-  addPow(value: number): void{
+  addPow(value: number): void {
     if (this.pow >= this.maxPow) {
-      return
+      return;
     }
     this.pow += value;
     if (this.pow >= this.maxPow) {
@@ -174,5 +173,9 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   }
   getPowRatio(): number {
     return this.pow / this.maxPow;
+  }
+  getExpRatio(): number{
+    const { expToNextLevel } = calcLevelAndRemainingExp(this.exp);
+    return  (expRequiredToLevel(this.level + 1)-expToNextLevel) / expRequiredToLevel(this.level + 1);
   }
 }

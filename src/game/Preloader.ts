@@ -10,6 +10,11 @@ import beginTabImg from "../assets/image/interface/beginTab.png"
 import rankTabImg from "../assets/image/interface/rankTab.png"
 import myTabImg from "../assets/image/interface/myTab.png"
 
+import btnBlueImg from "../assets/image/interface/button_blue.png"
+import btnYellowImg from "../assets/image/interface/button_yellow.png"
+import rankBgImg from "../assets/image/interface/bg_rank.png"
+import chooseHeroBgImg from "../assets/image/interface/bg_choose_hero.png"
+
 import enemyAImg from "../assets/image/enemy/enemy1.png";
 import enemyBImg from "../assets/image/enemy/enemy2.png";
 import enemyFastImg from "../assets/image/enemy/enemy11.png";
@@ -32,6 +37,9 @@ import supplyHpImg from "../assets/image/hero/hero_blood.png"
 import supplyPowImg from "../assets/image/hero/article2.png"
 
 import numberImg from "../assets/image/interface/number.png"
+import levelNumberImg from "../assets/image/interface/levelNumber.png"
+import levelNumberJson from "../assets/image/interface/levelNumber.json";
+
 import pauseImg from "../assets/image/interface/pause.png"
 import hpLabelImg from "../assets/image/interface/hpLabel.png"
 import progressBarBgRedImg from "../assets/image/interface/progress_bar_bg_red.png"
@@ -39,6 +47,8 @@ import progressBarContentRedImg from "../assets/image/interface/progress_bar_con
 import powLabelImg from "../assets/image/interface/powLabel.png"
 import progressBarBgYellowImg from "../assets/image/interface/progress_bar_bg_yellow.png"
 import progressBarContentYellowImg from "../assets/image/interface/progress_bar_content_yellow.png"
+import progressBarBgBlueImg from "../assets/image/interface/progress_bar_bg_blue.png"
+import progressBarContentBlueImg from "../assets/image/interface/progress_bar_content_blue.png"
 
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
@@ -74,6 +84,8 @@ export class Preloader extends Scene {
     this.load.image("powLabel", powLabelImg);
     this.load.image("progressBarBgYellow", progressBarBgYellowImg);
     this.load.image("progressBarContentYellow", progressBarContentYellowImg);
+    this.load.image("progressBarBgBlue", progressBarBgBlueImg);
+    this.load.image("progressBarContentBlue", progressBarContentBlueImg);
 
     //加载补给图片资源
     this.load.image("supplyExp", supplyExpImg);
@@ -85,12 +97,18 @@ export class Preloader extends Scene {
     this.load.image("rankTab", rankTabImg);
     this.load.image("beginTab", beginTabImg);
     this.load.image("myTab", myTabImg);
+  
+    this.load.image("btnBlue", btnBlueImg);
+    this.load.image("btnYellow", btnYellowImg);
+    this.load.image("rankBg", rankBgImg);
+    this.load.image("chooseHeroBg", chooseHeroBgImg);
     // 加载音频资源
     this.load.audio("bgm", bgmAudio);
     this.load.audio("boom", boomAudio);
     //加载纹理图集
     this.load.atlas("boom", boomImg, boomJson);
     this.load.atlas("bulletFireBird", bulletFireBirdImg, bulletFireBirdJson);
+    this.load.atlas("levelNumber", levelNumberImg, levelNumberJson);
     this.load.spritesheet("number", numberImg, { frameWidth: 64, frameHeight: 88 })
   }
   // preload中的资源全部加载完成后执行

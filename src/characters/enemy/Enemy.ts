@@ -17,17 +17,11 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.hpBar = this.scene.add.container(this.x, this.y - 32);
     this.hpBar.setVisible(false);
     this.hpBar.setActive(false);
-    const hpBarBg = this.scene.add
-      .rectangle(0, 0, 50, 4, 0x000000)
-      .setOrigin(0)
-      .setAlpha(0.5);
+    const hpBarBg = this.scene.add.rectangle(0, 0, 50, 3, 0x000000).setOrigin(0).setAlpha(0.5);
     this.hpBar.add(hpBarBg);
     // 创建血条填充色
     this.hpBarFill = this.scene.add
-      .rectangle(0, 0, 50, 4, 0xff0000)
-      .setOrigin(0, 0)
-      .setDepth(0.5)
-      .setAlpha(0.8);
+      .rectangle(0, 0, 50, 3, 0xff0000).setOrigin(0, 0).setDepth(0.5).setAlpha(0.7);
     this.hpBar.add(this.hpBarFill);
   }
   upgrade(level: number) {

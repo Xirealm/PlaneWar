@@ -40,6 +40,8 @@ let booms: GameObjects.Group;
 
 let hpRatio: GameObjects.Image;
 let powRatio: GameObjects.Image;
+let expRatio: GameObjects.Image;
+let levelLabel: GameObjects.Image;
 let scoreGroup: GameObjects.Group;
 let expToNextLevelText: GameObjects.Text;
 // 场景数据
@@ -57,12 +59,9 @@ export class Main extends Scene {
     this.width = width;
     this.height = height;
     // 背景
-    background = this.add
-      .tileSprite(0, 0, width, height, "gameBackground1")
-      .setOrigin(0, 0);
+    background = this.add.tileSprite(0, 0, width, height, "gameBackground1").setOrigin(0);
     // 暂停按钮
-    const pauseBtn = this.add
-      .image(width, 5, "pause")
+    const pauseBtn = this.add.image(width, 8, "pause")
       .setOrigin(1, 0)
       .setDepth(1)
       .setInteractive()
@@ -192,20 +191,6 @@ export class Main extends Scene {
     //初始化分数;
     score = 0;
     scoreGroup = this.add.group(); // 创建一个Group来存放所有数字
-    expToNextLevel = 0;
-    this.add
-      .text(width / 2, 80, "升级进度", {
-        fontFamily: "Arial",
-        fontSize: 10,
-      })
-      .setOrigin(0.5);
-    expToNextLevelText = this.add
-      .text(width / 2, 80, "0", {
-        fontFamily: "Arial",
-        color:"blue",
-        fontSize: 20,
-      })
-      .setOrigin(0.5);
     // Hp进度条
     const hpLabel = this.add.image(0, 5, "hpLabel").setOrigin(0).setScale(0.5);
     this.add
@@ -223,32 +208,39 @@ export class Main extends Scene {
       .setOrigin(0, 0);
     hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width
     // pow进度条
-    const powLabel = this.add
-      .image(0, 30, "powLabel")
-      .setOrigin(0)
-      .setScale(0.5);
-    this.add
-      .image(
-        powLabel.displayWidth,
-        powLabel.y + powLabel.displayHeight / 3,
-        "progressBarBgYellow"
-      )
-      .setInteractive()
-      .setDisplaySize(100, 10)
-      .setAlpha(0.8)
-      .setOrigin(0, 0);
-    powRatio = this.add
-      .image(
-        powLabel.displayWidth + 1,
-        powLabel.y + powLabel.displayHeight / 3 + 1,
-        "progressBarContentYellow"
-      )
-      .setInteractive()
-      .setSize(98, 13)
-      .setDisplaySize(98, 8)
-      .setAlpha(0.8)
-      .setOrigin(0, 0);
+    const powLabel = this.add.image(0, 30, "powLabel").setOrigin(0).setScale(0.5);
+    this.add.image(
+      powLabel.displayWidth,
+      powLabel.y + powLabel.displayHeight / 3,
+      "progressBarBgYellow"
+    )
+      .setInteractive().setDisplaySize(100, 10).setAlpha(0.8).setOrigin(0);
+    powRatio = this.add.image(
+      powLabel.displayWidth + 1,
+       powLabel.y + powLabel.displayHeight / 3 + 1,
+      "progressBarContentYellow"
+    )
+      .setInteractive().setSize(98, 13).setDisplaySize(98, 8).setAlpha(0.8).setOrigin(0);
     powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
+    // 经验进度条
+    levelLabel = this.add
+      .sprite(width / 2 + 30, 80, "levelNumber", "level1")
+      .setScale(0.4)
+      .setDepth(1);
+    const expBg = this.add
+      .image(width / 2, 80 ,"progressBarBgBlue")
+      .setInteractive()
+      .setDisplaySize(230, 8)
+      .setAlpha(0.8)
+      .setOrigin(0.5,0);
+    expRatio = this.add
+      .image(expBg.x - expBg.displayWidth / 2, 80, "progressBarContentBlue")
+      .setInteractive()
+      .setSize(230, 8)
+      .setDisplaySize(0, 8)
+      .setAlpha(0.8)
+      .setOrigin(0);
+    expRatio.displayWidth = hero.getExpRatio() * expRatio.width;
     //调用注册事件
     this.addEvent();
   }
@@ -369,15 +361,12 @@ export class Main extends Scene {
     switch (type) {
       case "supplyExp":
         supply = suppliesExp.getFirstDead(false); // 获取一个非活跃的敌机A对象
-        console.log("经验补给出现");
         break;
       case "supplyHp":
         supply = suppliesHp.getFirstDead(false); // 获取一个非活跃的敌机A对象
-        console.log("生命补给出现");
         break;
       case "supplyPow":
         supply = suppliesPow.getFirstDead(false); // 获取一个非活跃的敌机A对象
-        console.log("能量补给出现");
         break;
       default:
         new Error("没有这个补给类型");
@@ -388,6 +377,7 @@ export class Main extends Scene {
     }
   }
   onHeroUpgrade(hero) {
+    levelLabel.setTexture("levelNumber","level"+String(hero.level))
     // 处理英雄升级后的逻辑
     console.log("英雄升级！！！！！！！！！！！！！！！！！！！", hero);
     enemiesA.getChildren().forEach((enemy) => {
@@ -430,14 +420,10 @@ export class Main extends Scene {
   }
   // 子弹击杀敌军
   kill(bullet: Bullet, enemy: Enemy) {
-    enemy.killed();
-    // 显示爆炸
-    booms.getFirstDead()?.show(enemy.x, enemy.y);
-    // console.log("子弹击杀敌机");
+    enemy.killed(); //敌机死亡
+    booms.getFirstDead()?.show(enemy.x, enemy.y); //爆炸
     // 分数更新
     score += enemy.score;
-    // 升级到下一级所需经验更新
-    expToNextLevelText.text = String(hero.expToNextLevel);
     hero.growExp(enemy.exp);
   }
   updateDisplayScore() {
@@ -456,7 +442,6 @@ export class Main extends Scene {
       scoreGroup.add(sprite); // 将精灵添加到Group中
       position.x -= 20;
     }
-    // scoreText.text = String((score += value));
   }
   /**
    * 英雄受到伤害
@@ -489,28 +474,23 @@ export class Main extends Scene {
   getSupply(hero, supply) {
     switch (supply.supplyType) {
       case "Exp":
-        console.log("吃到了经验补给");
         hero.growExp(supply.takeSupply());
-        // 升级到下一级所需经验更新
-        expToNextLevelText.text = String(hero.expToNextLevel);
         // console.log("英雄当前经验值为：", hero.exp);
         break;
       case "Hp":
-        console.log("吃到了生命补给");
         hero.supplyHp(supply.takeSupply());  
         hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
         break;
       case "Pow":
-        console.log("吃到了能量补给");
         hero.addPow(supply.takeSupply());
         powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
         break;
     }
   }
-
   // 每一帧的回调
   update() {
     background.tilePositionY -= 1;
     this.updateDisplayScore();
+    expRatio.displayWidth = (hero.level < 5 ? hero.getExpRatio() : 1) * expRatio.width;
   }
 }

@@ -6,6 +6,10 @@ export class Pause extends Scene {
   }
   create() {
     let { width, height } = this.cameras.main;
+    this.add
+      .rectangle(0, 0, width, height, 0x000000)
+      .setOrigin(0, 0)
+      .setAlpha(0.5);;
     // 当前得分
     this.add
       .text(width / 2, height / 2 - 10, "继续游戏", {

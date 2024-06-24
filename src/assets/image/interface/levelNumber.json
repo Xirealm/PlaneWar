@@ -1,0 +1,125 @@
+{
+	"textures": [
+		{
+			"image": "levelNumber.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 225,
+				"h": 58
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "level4",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 202,
+						"h": 148
+					},
+					"spriteSourceSize": {
+						"x": 16,
+						"y": 56,
+						"w": 47,
+						"h": 56
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 47,
+						"h": 56
+					}
+				},
+				{
+					"filename": "level5",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 202,
+						"h": 148
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 56,
+						"w": 45,
+						"h": 56
+					},
+					"frame": {
+						"x": 50,
+						"y": 1,
+						"w": 45,
+						"h": 56
+					}
+				},
+				{
+					"filename": "level3",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 202,
+						"h": 148
+					},
+					"spriteSourceSize": {
+						"x": 18,
+						"y": 56,
+						"w": 44,
+						"h": 56
+					},
+					"frame": {
+						"x": 97,
+						"y": 1,
+						"w": 44,
+						"h": 56
+					}
+				},
+				{
+					"filename": "level2",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 202,
+						"h": 148
+					},
+					"spriteSourceSize": {
+						"x": 17,
+						"y": 56,
+						"w": 43,
+						"h": 56
+					},
+					"frame": {
+						"x": 143,
+						"y": 1,
+						"w": 43,
+						"h": 56
+					}
+				},
+				{
+					"filename": "level1",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 187,
+						"h": 148
+					},
+					"spriteSourceSize": {
+						"x": 8,
+						"y": 56,
+						"w": 36,
+						"h": 56
+					},
+					"frame": {
+						"x": 188,
+						"y": 1,
+						"w": 36,
+						"h": 56
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:7597b6f4c02a9a7a2c880cd1dd98b6f5:89ba21749a845541378286d61d9513e8:2cc27235d1fc575d179f780fa6b7f8ba$"
+	}
+}
