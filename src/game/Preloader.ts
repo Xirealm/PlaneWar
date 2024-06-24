@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
 import backgroundImg from "../assets/image/bg/mainBg.jpg";
 import homeBackgroundImg from "../assets/image/interface/homeBg.jpg";
-import gameBackgroundImg1 from "../assets/image/bg/bg0.jpg"
+import gameBackgroundImg1 from "../assets/image/bg/bg.jpg"
 import titleImg from "../assets/image/interface/title.png"
 import beginBtnImg from "../assets/image/interface/beginBtn.png";
 
@@ -33,6 +33,12 @@ import supplyPowImg from "../assets/image/hero/article2.png"
 
 import numberImg from "../assets/image/interface/number.png"
 import pauseImg from "../assets/image/interface/pause.png"
+import hpLabelImg from "../assets/image/interface/hpLabel.png"
+import progressBarBgRedImg from "../assets/image/interface/progress_bar_bg_red.png"
+import progressBarContentRedImg from "../assets/image/interface/progress_bar_content_red.png"
+import powLabelImg from "../assets/image/interface/powLabel.png"
+import progressBarBgYellowImg from "../assets/image/interface/progress_bar_bg_yellow.png"
+import progressBarContentYellowImg from "../assets/image/interface/progress_bar_content_yellow.png"
 
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
@@ -62,7 +68,13 @@ export class Preloader extends Scene {
     this.load.image("heroB", heroBImg);
     this.load.image("bulletA", bulletAImg);
     this.load.image("pause", pauseImg);
-    
+    this.load.image("hpLabel", hpLabelImg);
+    this.load.image("progressBarBgRed", progressBarBgRedImg);
+    this.load.image("progressBarContentRed", progressBarContentRedImg);
+    this.load.image("powLabel", powLabelImg);
+    this.load.image("progressBarBgYellow", progressBarBgYellowImg);
+    this.load.image("progressBarContentYellow", progressBarContentYellowImg);
+
     //加载补给图片资源
     this.load.image("supplyExp", supplyExpImg);
     this.load.image("supplyHp", supplyHpImg);

@@ -11,7 +11,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   maxPow: number = 10; // 英雄的能量值上限
   pow: number = 0; // 英雄的能量值
   bullets: Physics.Arcade.Group; //英雄的子弹组
-  fireFrequency: number = 400; // 子弹的发射频率
+  fireFrequency: number = 300; // 子弹的发射频率
   isDown: boolean = false;
   downX: number;
   downY: number;
@@ -168,5 +168,11 @@ export abstract class Hero extends Physics.Arcade.Sprite {
     }
     // 重新设置发射事件
     this.initFireEvent();
+  }
+  getHpRatio(): number {
+    return this.hp / this.maxHp;
+  }
+  getPowRatio(): number {
+    return this.pow / this.maxPow;
   }
 }

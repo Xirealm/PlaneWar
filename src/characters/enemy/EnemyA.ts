@@ -11,18 +11,16 @@ export class EnemyA extends Enemy {
   }
   //生成敌军
   born() {
-    let x = Math.Between(this.width - 10, 345);
-    let y = Math.Between(-this.height, -this.height * 5);
-    this.hp = this.maxHp;
-    this.enableBody(true, x, y, true, true);
+    super.born();
     this.setVelocityY(125);
-    console.log("敌机A生成血量为",this.hp);
+    // console.log("敌机A生成血量为",this.hp);
   }
   takeDamage(damage: number): void {
     this.hp -= damage;
-    console.log("EnemyA被攻击，剩余血量：", this.hp);
-  }
-  killed(): void {
-    this.disableBody(true, true);
+    let demage = this.scene.add.text(this.x, this.y, `${damage}`, { fontSize: "20px" })
+    setTimeout(() => {
+      demage.destroy();
+    },500);
+    // console.log("EnemyA被攻击，剩余血量：", this.hp);
   }
 }

@@ -12,21 +12,13 @@ export class EnemyFast extends Enemy {
   }
   //敌机生成
   born() {
-    let x = Math.Between(30, 345);
-    let y = Math.Between(-20, -40);
-    this.hp = this.maxHp;
-    this.enableBody(true, x, y, true, true);
+    super.born();
     this.setVelocityY(500);
-    console.log("敌机Fast生成血量为", this.hp);
+    // console.log("敌机Fast生成血量为", this.hp);
   }
   //敌机受到伤害
   takeDamage(damage: number): void {
     this.hp -= damage;
-    console.log("EnemyFast被攻击，剩余血量：", this.hp);
-  }
-  //敌机Fast被击杀
-  killed(): void {
-    this.disableBody(true, true);
-    console.log("EnemyFast被击杀");
+    // console.log("EnemyFast被攻击，剩余血量：", this.hp);
   }
 }

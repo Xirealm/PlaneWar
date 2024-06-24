@@ -37,10 +37,11 @@ let suppliesExp: Physics.Arcade.Group;
 let suppliesHp: Physics.Arcade.Group;
 let suppliesPow: Physics.Arcade.Group;
 let booms: GameObjects.Group;
+
+let hpRatio: GameObjects.Image;
+let powRatio: GameObjects.Image;
 let scoreGroup: GameObjects.Group;
 let expToNextLevelText: GameObjects.Text;
-let hpText: GameObjects.Text;
-let powText: GameObjects.Text;
 // 场景数据
 let score: number;
 let expToNextLevel: number
@@ -193,42 +194,70 @@ export class Main extends Scene {
     scoreGroup = this.add.group(); // 创建一个Group来存放所有数字
     expToNextLevel = 0;
     this.add
-      .text(width / 2, 50, "升级进度", {
+      .text(width / 2, 80, "升级进度", {
         fontFamily: "Arial",
         fontSize: 10,
       })
       .setOrigin(0.5);
     expToNextLevelText = this.add
-      .text(width / 2, 50, "0", {
+      .text(width / 2, 80, "0", {
         fontFamily: "Arial",
+        color:"blue",
         fontSize: 20,
       })
       .setOrigin(0.5);
-    const hpLabel = this.add.text(0, 10, "生命值", {
-      fontFamily: "Arial",
-      fontSize: 20,
-    });
-    hpText = this.add.text(hpLabel.width, 10, String(hero.hp), {
-      fontFamily: "Arial",
-      fontSize: 20,
-    });
-    const powLabel = this.add.text(0, 50, "能量值", {
-      fontFamily: "Arial",
-      fontSize: 20,
-    });
-    powText = this.add.text(hpLabel.width, 50, String(hero.pow), {
-      fontFamily: "Arial",
-      fontSize: 20,
-    });
+    // Hp进度条
+    const hpLabel = this.add.image(0, 5, "hpLabel").setOrigin(0).setScale(0.5);
+    this.add
+      .image(hpLabel.displayWidth, hpLabel.y + hpLabel.displayHeight / 3, "progressBarBgRed")
+      .setInteractive()
+      .setDisplaySize(100, 10)
+      .setAlpha(0.8)
+      .setOrigin(0, 0);
+    hpRatio = this.add
+      .image(hpLabel.displayWidth + 1, hpLabel.y + hpLabel.displayHeight / 3 + 1, "progressBarContentRed")
+      .setInteractive()
+      .setSize(98, 13)
+      .setDisplaySize(98, 8)
+      .setAlpha(0.8)
+      .setOrigin(0, 0);
+    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width
+    // pow进度条
+    const powLabel = this.add
+      .image(0, 30, "powLabel")
+      .setOrigin(0)
+      .setScale(0.5);
+    this.add
+      .image(
+        powLabel.displayWidth,
+        powLabel.y + powLabel.displayHeight / 3,
+        "progressBarBgYellow"
+      )
+      .setInteractive()
+      .setDisplaySize(100, 10)
+      .setAlpha(0.8)
+      .setOrigin(0, 0);
+    powRatio = this.add
+      .image(
+        powLabel.displayWidth + 1,
+        powLabel.y + powLabel.displayHeight / 3 + 1,
+        "progressBarContentYellow"
+      )
+      .setInteractive()
+      .setSize(98, 13)
+      .setDisplaySize(98, 8)
+      .setAlpha(0.8)
+      .setOrigin(0, 0);
+    powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     //调用注册事件
     this.addEvent();
   }
   //注册事件
   addEvent() {
     this.time.addEvent({
-      delay: 1500, // 定时器 每1.5秒生成3个敌机
+      delay: 1500, // 定时器 每1.5秒生成2个敌机
       callback: () => {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           this.spawnEnemy("enemyA");
         }
       },
@@ -374,10 +403,10 @@ export class Main extends Scene {
       (enemy as Enemy).upgrade(hero.level);
     })
     bulletFireBird.fire(hero.x, hero.y - 32);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
       this.spawnEnemy("enemyA");
     }
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       this.spawnEnemy("enemyB");
     }
     for (let i = 0; i < 3 ; i++) {
@@ -437,12 +466,11 @@ export class Main extends Scene {
     // 将敌机销毁
     enemy.killed();
     hero.reduceHp(1)
-    hpText.text = String(hero.hp);
-    powText.text = String(hero.pow);
+    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
+    powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     if (hero.hp <= 0) {
       // 显示爆炸
       booms.getFirstDead()?.show(enemy.x, enemy.y);
-
       hero.disableBody(true, true);
       this.gameOver();
     }
@@ -469,13 +497,13 @@ export class Main extends Scene {
         break;
       case "Hp":
         console.log("吃到了生命补给");
-        hero.supplyHp(supply.takeSupply());
-        hpText.text = String(hero.hp);
+        hero.supplyHp(supply.takeSupply());  
+        hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
         break;
       case "Pow":
         console.log("吃到了能量补给");
         hero.addPow(supply.takeSupply());
-        powText.text = String(hero.pow);
+        powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
         break;
     }
   }
