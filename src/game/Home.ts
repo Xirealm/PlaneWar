@@ -74,14 +74,19 @@ export class Home extends Scene {
       .image(this.width / 2, this.height / 3, "chooseHeroBg")
       .setAlpha(0.7)
       .setScale(0.8);
+    let i = 0
     const btnPre = this.add
       .image(this.width / 2 - 150, this.height / 3, "btnPre")
       .setAlpha(0.7)
       .setScale(0.75)
       .setInteractive()
       .on("pointerdown", () => {
+        i--;
+        if (i === -1) {
+          i = heros.getLength() - 1;
+        }
         const heroOld = heros.getMatching("visible", true)[0];
-        const heroNew = heros.getMatching("visible", false)[0];
+        const heroNew = heros.getMatching()[i];
         heroOld.setVisible(false);
         heroNew.setVisible(true);
       });
@@ -91,8 +96,12 @@ export class Home extends Scene {
       .setScale(0.75)
       .setInteractive()
       .on("pointerdown", () => {
-        const heroOld = heros.getMatching("visible", true)[0];
-        const heroNew = heros.getMatching("visible", false)[0];
+        i++;
+        if (i === heros.getLength()) {
+          i = 0;
+        }
+        const heroOld = heros.getMatching("visible",true)[0];
+        const heroNew = heros.getMatching()[i];
         heroOld.setVisible(false);
         heroNew.setVisible(true)        
       });
@@ -102,8 +111,18 @@ export class Home extends Scene {
     const heroB = this.add.sprite(chooseHeroBg.x, chooseHeroBg.y, "heroB")
       .setOrigin(0.5)
       .setVisible(false);
+    const heroC = this.add
+      .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel3")
+      .setOrigin(0.5)
+      .setVisible(false);
+    const heroD = this.add
+      .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel4")
+      .setOrigin(0.5)
+      .setVisible(false);
     heros.add(heroA)
     heros.add(heroB)
+    heros.add(heroC)
+    heros.add(heroD)
     const beginBtn = this.add.image(
       this.width / 2,
       (this.height * 3) / 4,
@@ -120,7 +139,7 @@ export class Home extends Scene {
         // 点击事件：关闭当前场景，打开Main场景
         this.scene.start("Main");
       });
-    page.add([chooseHeroBg, beginBtn, beginBtnText, heroA , btnPre, btnNext]);
+    page.add([chooseHeroBg, beginBtn, beginBtnText, heroA ,heroB,heroC, btnPre, btnNext]);
   }
   initRankPage(page: GameObjects.Container) {
     const rankBg = this.add
