@@ -89,6 +89,7 @@ export class Home extends Scene {
         const heroNew = heros.getMatching()[i];
         heroOld.setVisible(false);
         heroNew.setVisible(true);
+        this.registry.set("hero", heroNew.name);
       });
     const btnNext = this.add
       .image(this.width / 2 + 150, this.height / 3, "btnNext")
@@ -103,26 +104,30 @@ export class Home extends Scene {
         const heroOld = heros.getMatching("visible",true)[0];
         const heroNew = heros.getMatching()[i];
         heroOld.setVisible(false);
-        heroNew.setVisible(true)        
+        heroNew.setVisible(true)    
+        this.registry.set("hero",heroNew.name)
       });
     const heros = this.add.group()
     const heroA = this.add.sprite(chooseHeroBg.x, chooseHeroBg.y, "heroA")
+      .setName("heroA")
       .setOrigin(0.5);
     const heroB = this.add.sprite(chooseHeroBg.x, chooseHeroBg.y, "heroB")
+      .setName("heroB")
       .setOrigin(0.5)
       .setVisible(false);
-    const heroC = this.add
-      .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel3")
-      .setOrigin(0.5)
-      .setVisible(false);
-    const heroD = this.add
-      .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel4")
-      .setOrigin(0.5)
-      .setVisible(false);
+    // const heroC = this.add
+    //   .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel3")
+    //   .setOrigin(0.5)
+    //   .setVisible(false);
+    // const heroD = this.add
+    //   .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel4")
+    //   .setOrigin(0.5)
+    //   .setVisible(false);
     heros.add(heroA)
     heros.add(heroB)
-    heros.add(heroC)
-    heros.add(heroD)
+    // heros.add(heroC)
+    // heros.add(heroD)
+    this.registry.set("hero", "heroA");
     const beginBtn = this.add.image(
       this.width / 2,
       (this.height * 3) / 4,
@@ -139,7 +144,7 @@ export class Home extends Scene {
         // 点击事件：关闭当前场景，打开Main场景
         this.scene.start("Main");
       });
-    page.add([chooseHeroBg, beginBtn, beginBtnText, heroA ,heroB,heroC, btnPre, btnNext]);
+    page.add([chooseHeroBg, beginBtn, beginBtnText, heroA ,heroB, btnPre, btnNext]);
   }
   initRankPage(page: GameObjects.Container) {
     const rankBg = this.add

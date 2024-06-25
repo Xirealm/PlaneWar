@@ -43,10 +43,8 @@ let powRatio: GameObjects.Image;
 let expRatio: GameObjects.Image;
 let levelLabel: GameObjects.Image;
 let scoreGroup: GameObjects.Group;
-let expToNextLevelText: GameObjects.Text;
 // 场景数据
 let score: number;
-let expToNextLevel: number
 
 export class Main extends Scene {
   width: number;
@@ -59,18 +57,25 @@ export class Main extends Scene {
     this.width = width;
     this.height = height;
     // 背景
-    background = this.add.tileSprite(0, 0, width, height, "gameBackground1").setOrigin(0);
+    background = this.add
+      .tileSprite(0, 0, width, height, "gameBackground1")
+      .setOrigin(0);
     // 暂停按钮
-    const pauseBtn = this.add.image(width, 8, "pause")
+    const pauseBtn = this.add
+      .image(width, 8, "pause")
       .setOrigin(1, 0)
       .setDepth(1)
       .setInteractive()
       .on("pointerdown", () => {
-        this.scene.pause()
+        this.scene.pause();
         this.game.scene.start("Pause");
       });
-    // 玩家
-    hero = HeroFactory.createHero(this, "TypeA");
+    // 为玩家装配英雄机
+    if (this.registry.get("hero") === "heroA") {
+      hero = HeroFactory.createHero(this, "TypeA");
+    } else if (this.registry.get("hero") === "heroB") {
+      hero = HeroFactory.createHero(this, "TypeB");
+    }
     // 子弹
     // 定义子弹A对象池
     bulletsA = this.physics.add.group({
@@ -194,33 +199,53 @@ export class Main extends Scene {
     // Hp进度条
     const hpLabel = this.add.image(0, 5, "hpLabel").setOrigin(0).setScale(0.5);
     this.add
-      .image(hpLabel.displayWidth, hpLabel.y + hpLabel.displayHeight / 3, "progressBarBgRed")
+      .image(
+        hpLabel.displayWidth,
+        hpLabel.y + hpLabel.displayHeight / 3,
+        "progressBarBgRed"
+      )
       .setInteractive()
       .setDisplaySize(100, 10)
       .setAlpha(0.8)
       .setOrigin(0, 0);
     hpRatio = this.add
-      .image(hpLabel.displayWidth + 1, hpLabel.y + hpLabel.displayHeight / 3 + 1, "progressBarContentRed")
+      .image(
+        hpLabel.displayWidth + 1,
+        hpLabel.y + hpLabel.displayHeight / 3 + 1,
+        "progressBarContentRed"
+      )
       .setInteractive()
       .setSize(98, 13)
       .setDisplaySize(98, 8)
       .setAlpha(0.8)
       .setOrigin(0, 0);
-    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width
+    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
     // pow进度条
-    const powLabel = this.add.image(0, 30, "powLabel").setOrigin(0).setScale(0.5);
-    this.add.image(
-      powLabel.displayWidth,
-      powLabel.y + powLabel.displayHeight / 3,
-      "progressBarBgYellow"
-    )
-      .setInteractive().setDisplaySize(100, 10).setAlpha(0.8).setOrigin(0);
-    powRatio = this.add.image(
-      powLabel.displayWidth + 1,
-       powLabel.y + powLabel.displayHeight / 3 + 1,
-      "progressBarContentYellow"
-    )
-      .setInteractive().setSize(98, 13).setDisplaySize(98, 8).setAlpha(0.8).setOrigin(0);
+    const powLabel = this.add
+      .image(0, 30, "powLabel")
+      .setOrigin(0)
+      .setScale(0.5);
+    this.add
+      .image(
+        powLabel.displayWidth,
+        powLabel.y + powLabel.displayHeight / 3,
+        "progressBarBgYellow"
+      )
+      .setInteractive()
+      .setDisplaySize(100, 10)
+      .setAlpha(0.8)
+      .setOrigin(0);
+    powRatio = this.add
+      .image(
+        powLabel.displayWidth + 1,
+        powLabel.y + powLabel.displayHeight / 3 + 1,
+        "progressBarContentYellow"
+      )
+      .setInteractive()
+      .setSize(98, 13)
+      .setDisplaySize(98, 8)
+      .setAlpha(0.8)
+      .setOrigin(0);
     powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     // 经验进度条
     levelLabel = this.add
@@ -228,11 +253,11 @@ export class Main extends Scene {
       .setScale(0.4)
       .setDepth(1);
     const expBg = this.add
-      .image(width / 2, 80 ,"progressBarBgBlue")
+      .image(width / 2, 80, "progressBarBgBlue")
       .setInteractive()
       .setDisplaySize(230, 8)
       .setAlpha(0.8)
-      .setOrigin(0.5,0);
+      .setOrigin(0.5, 0);
     expRatio = this.add
       .image(expBg.x - expBg.displayWidth / 2, 80, "progressBarContentBlue")
       .setInteractive()

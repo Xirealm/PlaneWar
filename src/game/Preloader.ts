@@ -31,6 +31,8 @@ import heroALevel5Img from "../assets/image/hero/hero3.png";
 import heroBImg from "../assets/image/hero/hero_b_1.png";
 import heroBLevel2Img from "../assets/image/hero/hero_b_02.png";
 import heroBLevel3Img from "../assets/image/hero/hero_b_03.png";
+import heroBLevel4Img from "../assets/image/hero/hero_b_04.png";
+import heroBLevel5Img from "../assets/image/hero/hero2.png";
 import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
@@ -86,6 +88,8 @@ export class Preloader extends Scene {
     this.load.image("heroB", heroBImg);
     this.load.image("heroBLevel2", heroBLevel2Img);
     this.load.image("heroBLevel3", heroBLevel3Img);
+    this.load.image("heroBLevel4", heroBLevel4Img);
+    this.load.image("heroBLevel5", heroBLevel5Img);
     this.load.image("bulletA", bulletAImg);
     this.load.image("pause", pauseImg);
     this.load.image("hpLabel", hpLabelImg);

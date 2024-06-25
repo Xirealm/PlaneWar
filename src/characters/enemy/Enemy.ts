@@ -1,12 +1,14 @@
 import { Physics, Scene ,Math} from "phaser";
 
 export abstract class Enemy extends Physics.Arcade.Sprite {
+  //敌机属性
   hp: number; // 敌机的生命值
   maxHp: number; //敌机最大生命值
-  hpBar: Phaser.GameObjects.Container;
-  hpBarFill: Phaser.GameObjects.Rectangle;
   score: number; //敌机的分数值
   exp: number; //敌机的经验值
+  //游戏元素
+  hpBar: Phaser.GameObjects.Container;
+  hpBarFill: Phaser.GameObjects.Rectangle;
   constructor(scene: Scene, x: number, y: number, texture: string) {
     super(scene, x, y, texture);
     scene.add.existing(this);
@@ -17,11 +19,17 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.hpBar = this.scene.add.container(this.x, this.y - 32);
     this.hpBar.setVisible(false);
     this.hpBar.setActive(false);
-    const hpBarBg = this.scene.add.rectangle(0, 0, 50, 3, 0x000000).setOrigin(0).setAlpha(0.5);
+    const hpBarBg = this.scene.add
+      .rectangle(0, 0, 50, 3, 0x000000)
+      .setOrigin(0)
+      .setAlpha(0.5);
     this.hpBar.add(hpBarBg);
     // 创建血条填充色
     this.hpBarFill = this.scene.add
-      .rectangle(0, 0, 50, 3, 0xff0000).setOrigin(0, 0).setDepth(0.5).setAlpha(0.7);
+      .rectangle(0, 0, 50, 3, 0xff0000)
+      .setOrigin(0, 0)
+      .setDepth(0.5)
+      .setAlpha(0.7);
     this.hpBar.add(this.hpBarFill);
   }
   upgrade(level: number) {
@@ -36,8 +44,8 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     if (this.y >= height + 20) {
       this.disableBody(true, true);
     }
-    this.hpBar.setPosition(this.x - (50/2), this.y + this.height / 3);
-    this.hpBarFill.width = 50 * (this.hp / this.maxHp) 
+    this.hpBar.setPosition(this.x - 50 / 2, this.y + this.height / 3);
+    this.hpBarFill.width = 50 * (this.hp / this.maxHp);
   }
   born() {
     let x = Math.Between(this.width - 10, 345);
