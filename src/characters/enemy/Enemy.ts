@@ -25,7 +25,7 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.hpBar.add(this.hpBarFill);
   }
   upgrade(level: number) {
-    this.maxHp = this.maxHp * level * 2;
+    this.maxHp = this.maxHp * 2;
     this.score = this.score * 2;
     console.log("敌人升级!!!!!!!!!!!!!!!!!!");
   }

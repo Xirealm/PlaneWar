@@ -30,7 +30,7 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
     // this.scene.sound.play("bullet");
   }
   upgrade(level: number) {
-    this.damage = this.damage * level * 1.5;
+    this.damage = this.damage * 2;
   }
   // 每一帧更新回调 销毁子弹，重新置于对象池
   preUpdate(time: number, delta: number) {

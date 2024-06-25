@@ -72,7 +72,38 @@ export class Home extends Scene {
   initBeginPage(page: GameObjects.Container) {
     const chooseHeroBg = this.add
       .image(this.width / 2, this.height / 3, "chooseHeroBg")
-      .setAlpha(0.7);
+      .setAlpha(0.7)
+      .setScale(0.8);
+    const btnPre = this.add
+      .image(this.width / 2 - 150, this.height / 3, "btnPre")
+      .setAlpha(0.7)
+      .setScale(0.75)
+      .setInteractive()
+      .on("pointerdown", () => {
+        const heroOld = heros.getMatching("visible", true)[0];
+        const heroNew = heros.getMatching("visible", false)[0];
+        heroOld.setVisible(false);
+        heroNew.setVisible(true);
+      });
+    const btnNext = this.add
+      .image(this.width / 2 + 150, this.height / 3, "btnNext")
+      .setAlpha(0.7)
+      .setScale(0.75)
+      .setInteractive()
+      .on("pointerdown", () => {
+        const heroOld = heros.getMatching("visible", true)[0];
+        const heroNew = heros.getMatching("visible", false)[0];
+        heroOld.setVisible(false);
+        heroNew.setVisible(true)        
+      });
+    const heros = this.add.group()
+    const heroA = this.add.sprite(chooseHeroBg.x, chooseHeroBg.y, "heroA")
+      .setOrigin(0.5);
+    const heroB = this.add.sprite(chooseHeroBg.x, chooseHeroBg.y, "heroB")
+      .setOrigin(0.5)
+      .setVisible(false);
+    heros.add(heroA)
+    heros.add(heroB)
     const beginBtn = this.add.image(
       this.width / 2,
       (this.height * 3) / 4,
@@ -89,9 +120,7 @@ export class Home extends Scene {
         // 点击事件：关闭当前场景，打开Main场景
         this.scene.start("Main");
       });
-    page.add(chooseHeroBg);
-    page.add(beginBtn);
-    page.add(beginBtnText);
+    page.add([chooseHeroBg, beginBtn, beginBtnText, heroA , btnPre, btnNext]);
   }
   initRankPage(page: GameObjects.Container) {
     const rankBg = this.add

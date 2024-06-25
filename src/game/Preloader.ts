@@ -1,14 +1,17 @@
 import { Scene } from "phaser";
 import backgroundImg from "../assets/image/bg/mainBg.jpg";
 import homeBackgroundImg from "../assets/image/interface/homeBg.jpg";
-import gameBackgroundImg1 from "../assets/image/bg/bg.jpg"
-import titleImg from "../assets/image/interface/title.png"
+import gameBackgroundImg1 from "../assets/image/bg/bg.jpg";
+import titleImg from "../assets/image/interface/title.png";
 import beginBtnImg from "../assets/image/interface/beginBtn.png";
-
-import tabBarImg from "../assets/image/interface/tabBar.png"
-import beginTabImg from "../assets/image/interface/beginTab.png"
-import rankTabImg from "../assets/image/interface/rankTab.png"
-import myTabImg from "../assets/image/interface/myTab.png"
+import loginPanelImg from "../assets/image/interface/login_panel.png";
+import loginPanelJson from "../assets/image/interface/login_panel.json";
+import tabBarImg from "../assets/image/interface/tabBar.png";
+import beginTabImg from "../assets/image/interface/beginTab.png";
+import rankTabImg from "../assets/image/interface/rankTab.png";
+import myTabImg from "../assets/image/interface/myTab.png";
+import btnPreImg from "../assets/image/interface/btn_pre.png"
+import btnNextImg from "../assets/image/interface/btn_next.png"
 
 import btnBlueImg from "../assets/image/interface/button_blue.png"
 import btnYellowImg from "../assets/image/interface/button_yellow.png"
@@ -26,6 +29,8 @@ import heroALevel3Img from "../assets/image/hero/hero03.png";
 import heroALevel4Img from "../assets/image/hero/hero04.png";
 import heroALevel5Img from "../assets/image/hero/hero3.png";
 import heroBImg from "../assets/image/hero/hero_b_1.png";
+import heroBLevel2Img from "../assets/image/hero/hero_b_02.png";
+import heroBLevel3Img from "../assets/image/hero/hero_b_03.png";
 import bulletAImg from "../assets/image/bullet/10.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
@@ -55,12 +60,15 @@ import boomAudio from "../assets/audio/use_bomb.wav";
 // import bulletAudio from "../assets/audio/bullet.mp3";
 
 export class Preloader extends Scene {
+  loadStartTime:number;
   constructor() {
     // 游戏预载场景
     super("Preloader");
   }
   // 加载游戏资源
   preload() {
+    // 记录加载开始的时间
+    this.loadStartTime = Date.now();
     //加载图片资源
     this.load.image("background", backgroundImg);
     this.load.image("gameBackground1", gameBackgroundImg1);
@@ -76,6 +84,8 @@ export class Preloader extends Scene {
     this.load.image("heroALevel4", heroALevel4Img);
     this.load.image("heroALevel5", heroALevel5Img);
     this.load.image("heroB", heroBImg);
+    this.load.image("heroBLevel2", heroBLevel2Img);
+    this.load.image("heroBLevel3", heroBLevel3Img);
     this.load.image("bulletA", bulletAImg);
     this.load.image("pause", pauseImg);
     this.load.image("hpLabel", hpLabelImg);
@@ -86,7 +96,6 @@ export class Preloader extends Scene {
     this.load.image("progressBarContentYellow", progressBarContentYellowImg);
     this.load.image("progressBarBgBlue", progressBarBgBlueImg);
     this.load.image("progressBarContentBlue", progressBarContentBlueImg);
-
     //加载补给图片资源
     this.load.image("supplyExp", supplyExpImg);
     this.load.image("supplyHp", supplyHpImg);
@@ -97,19 +106,24 @@ export class Preloader extends Scene {
     this.load.image("rankTab", rankTabImg);
     this.load.image("beginTab", beginTabImg);
     this.load.image("myTab", myTabImg);
-  
     this.load.image("btnBlue", btnBlueImg);
     this.load.image("btnYellow", btnYellowImg);
     this.load.image("rankBg", rankBgImg);
     this.load.image("chooseHeroBg", chooseHeroBgImg);
+    this.load.image("btnPre", btnPreImg);
+    this.load.image("btnNext", btnNextImg);
     // 加载音频资源
     this.load.audio("bgm", bgmAudio);
     this.load.audio("boom", boomAudio);
     //加载纹理图集
+    this.load.atlas("loginPanel", loginPanelImg, loginPanelJson);
     this.load.atlas("boom", boomImg, boomJson);
     this.load.atlas("bulletFireBird", bulletFireBirdImg, bulletFireBirdJson);
     this.load.atlas("levelNumber", levelNumberImg, levelNumberJson);
-    this.load.spritesheet("number", numberImg, { frameWidth: 64, frameHeight: 88 })
+    this.load.spritesheet("number", numberImg, {
+      frameWidth: 64,
+      frameHeight: 88,
+    });
   }
   // preload中的资源全部加载完成后执行
   create() {
@@ -119,7 +133,7 @@ export class Preloader extends Scene {
     this.add.tileSprite(0, 0, width, height, "background").setOrigin(0, 0);
     // 标题
     this.add
-      .image(width / 2, height / 4, "title")
+      .image(width / 2, height / 4 - 50, "title")
       .setScale(0.6)
       .setOrigin(0.5);
     // 开始按钮
@@ -130,8 +144,8 @@ export class Preloader extends Scene {
       .on("pointerdown", () => {
         // 点击事件：关闭当前场景，打开Main场景
         // 背景音乐
-        this.sound.play("bgm");
-        this.scene.start("Home");
+        // this.sound.play("bgm");
+        this.game.scene.start("Login");
       })
       .setOrigin(0.5);
     // 创建爆炸动画
@@ -158,5 +172,10 @@ export class Preloader extends Scene {
       repeat: 0,
       frameRate: 12,
     });
+    // 记录加载结束的时间
+    const loadEndTime = Date.now();
+    // 计算加载所需的时间
+    const loadTime = loadEndTime - this.loadStartTime;
+    console.log(`Resources loaded in ${loadTime} ms`);
   }
 }
