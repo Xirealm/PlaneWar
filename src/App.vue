@@ -7,6 +7,7 @@ import { Login } from "./game/Login";
 import { Main } from "./game/Main";
 import { Pause } from "./game/Pause";
 import { End } from "./game/End";
+import { ChooseSkill } from "./game/ChooseSkill";
 
 //判断是否为移动端
 let isMobile = /(iPhone|iPad|Android)/i.test(navigator.userAgent);
@@ -15,7 +16,7 @@ let game: Game;
 onMounted(() => {
     game = new Game({
         parent: "container",
-        type: AUTO,
+        type: Phaser.WEBGL,
         width: 375,
         // 高度依据屏幕宽高比计算
         height: isMobile ? (window.innerHeight / window.innerWidth) * 375 : 667,
@@ -28,10 +29,13 @@ onMounted(() => {
                 debug: false,
             },
         },
+        render: {
+            antialias:true
+        },
         dom :{
             createContainer: true
         },
-        scene: [Preloader, Login , Home , Main , Pause, End],
+        scene: [Preloader, Login , Home , Main , Pause, ChooseSkill , End],
     });
 });
 onUnmounted(() => {

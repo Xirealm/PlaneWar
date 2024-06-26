@@ -1,4 +1,4 @@
-import { Scene, GameObjects, type Types, Physics, Math} from "phaser";
+import { Scene, GameObjects, type Types, Physics} from "phaser";
 
 import { HeroFactory } from "../characters/hero/HeroFactory";
 import { Hero } from "../characters/hero/Hero"
@@ -22,6 +22,10 @@ import { SupplyExp } from "../characters/supply/SupplyExp";
 import { SupplyHp } from "../characters/supply/SupplyHp";
 import { SupplyPow } from "../characters/supply/SupplyPow";
 
+import { SkillFactory } from "../characters/skill/SkillFactory";
+import { Skill } from "../characters/skill/Skill";
+import { SkillActive1 } from "../characters/skill/SkillActive1";
+
 import { Boom } from "../characters/boom/Boom";
 
 // 场景元素
@@ -41,10 +45,12 @@ let booms: GameObjects.Group;
 let hpRatio: GameObjects.Image;
 let powRatio: GameObjects.Image;
 let expRatio: GameObjects.Image;
-let levelLabel: GameObjects.Image;
 let levelText: GameObjects.Text;
 let scoreGroup: GameObjects.Group;
-let levelContainer: GameObjects.Container;
+let skillContainer: GameObjects.Container; //技能选择容器
+let activeSkillContainer: GameObjects.Container; //主动技能容器
+let skillGroup: GameObjects.Group; //技能组
+let selectedSkillGroup: GameObjects.Group; //已选择的技能组
 // 场景数据
 let score: number;
 
@@ -198,7 +204,7 @@ export class Main extends Scene {
     //初始化分数;
     score = 0;
     scoreGroup = this.add.group(); // 创建一个Group来存放所有得分数字
-    // Hp进度条
+    // 血量条
     const hpLabel = this.add.image(0, 5, "hpLabel").setOrigin(0).setScale(0.5);
     this.add
       .image(
@@ -222,7 +228,7 @@ export class Main extends Scene {
       .setAlpha(0.8)
       .setOrigin(0, 0);
     hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
-    // pow进度条
+    // 能量进度条
     const powLabel = this.add
       .image(0, 30, "powLabel")
       .setOrigin(0)
@@ -250,11 +256,6 @@ export class Main extends Scene {
       .setOrigin(0);
     powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     // 经验进度条
-    levelContainer = this.add.container(width / 2, 80);
-    // levelLabel = this.add
-    //   .sprite(width / 2 + 30, 80, "levelNumber", "level1")
-    //   .setScale(0.4)
-    //   .setDepth(1);
     levelText = this.add
       .text(width / 2, 85, "1", {
         font: "25px bold Arial",
@@ -279,7 +280,61 @@ export class Main extends Scene {
       .setAlpha(0.8)
       .setOrigin(0);
     expRatio.displayWidth = hero.getExpRatio() * expRatio.width;
-    //调用注册事件
+    // skillGroup = this.add.group();
+    selectedSkillGroup = this.add.group();
+     // 技能选择容器
+    // skillContainer = this.add.container(this.width / 2, 200).setVisible(false);
+    // const skillActive1 = SkillFactory.createSkill(this, "SkillActive1");
+    // const skillActive2 = SkillFactory.createSkill(this, "SkillActive2");
+    // const skillActive3 = SkillFactory.createSkill(this, "SkillActive3");
+    // const skillActive4 = SkillFactory.createSkill(this, "SkillActive4");
+    // skillGroup.add(skillActive1);
+    // skillGroup.add(skillActive2);
+    // skillGroup.add(skillActive3);
+    // skillGroup.add(skillActive4);
+    //随机抽取3个技能
+    // setTimeout(() => {
+    //   this.getSkillContainer();
+    // }, 1000);
+    // 主动技能按钮容器
+    activeSkillContainer = this.add.container(0, 500);
+    // const activeSkill1 = this.add
+    //   .image(35, 0, "iconFirebird")
+    //   .setOrigin(0.5)
+    //   .setVisible(false)
+    //   .setDisplaySize(40, 40)
+    //   .setInteractive()
+    //   .on("pointerdown", () => {
+    //     console.log("主动技能1");
+    //     const skill = selectedSkillGroup.getMatching("type", "active")[0]; 
+    //     console.log(skill);
+    //     skill.useSkill();
+    //   });
+      this.scene.pause();
+      this.game.scene.start("ChooseSkill");
+
+    // const activeSkill2 = this.add
+    //   .image(35, 50, "iconFirebird")
+    //   .setOrigin(0.5)
+    //   .setVisible(false)
+    //   .setDisplaySize(40, 40);
+    // const activeSkill3 = this.add
+    //   .image(35, 100, "iconFirebird")
+    //   .setOrigin(0.5)
+    //   .setVisible(false)
+    //   .setDisplaySize(40, 40);
+    // const activeSkill4 = this.add
+    //   .image(35, 150, "iconFirebird")
+    //   .setOrigin(0.5)
+    //   .setVisible(false)
+    //   .setDisplaySize(40, 40);
+    // activeSkillContainer.add([
+    //   activeSkill1,
+    //   // activeSkill2,
+    //   // activeSkill3,
+    //   // activeSkill4,
+    // ]);
+    // 调用注册事件
     this.addEvent();
   }
   //注册事件
@@ -295,7 +350,7 @@ export class Main extends Scene {
       loop: true, // 循环生成
     });
     this.time.addEvent({
-      delay: Math.Between(3000, 4000), // 定时器 每3-4秒生成1个敌机B
+      delay: Phaser.Math.Between(3000, 4000), // 定时器 每3-4秒生成1个敌机B
       callback: () => {
         this.spawnEnemy("enemyB");
       },
@@ -303,7 +358,7 @@ export class Main extends Scene {
       loop: true, // 循环生成
     });
     this.time.addEvent({
-      delay: Math.Between(4000, 8000), // 定时器 每4-8秒生成1个Fast敌机
+      delay: Phaser.Math.Between(4000, 8000), // 定时器 每4-8秒生成1个Fast敌机
       callback: () => {
         this.spawnEnemy("enemyFast");
       },
@@ -312,7 +367,7 @@ export class Main extends Scene {
     });
     //掉落经验补给
     this.time.addEvent({
-      delay: Math.Between(10000, 20000), // 定时器 每10-20秒生成1个升级补给
+      delay: Phaser.Math.Between(10000, 20000), // 定时器 每10-20秒生成1个升级补给
       callback: () => {
         this.spawnSupply("supplyExp");
       },
@@ -321,7 +376,7 @@ export class Main extends Scene {
     });
     //掉落生命补给
     this.time.addEvent({
-      delay: Math.Between(10000, 20000), // 定时器 每10-20秒掉落1个生命补给
+      delay: Phaser.Math.Between(10000, 20000), // 定时器 每10-20秒掉落1个生命补给
       callback: () => {
         this.spawnSupply("supplyHp");
       },
@@ -330,7 +385,7 @@ export class Main extends Scene {
     });
     //掉落能量补给
     this.time.addEvent({
-      delay: Math.Between(5000, 10000), // 定时器 每5-10秒掉落1个生命补给
+      delay: Phaser.Math.Between(5000, 10000), // 定时器 每5-10秒掉落1个生命补给
       callback: () => {
         this.spawnSupply("supplyPow");
       },
@@ -339,6 +394,9 @@ export class Main extends Scene {
     });
     // 监听英雄升级事件
     this.events.on("heroUpgrade", this.onHeroUpgrade, this);
+    // 监听英雄升级事件
+    this.events.on("getSkill", this.onGetSkill, this);
+    this.events.on("fireBulletFirdBird", this.fireBulletFirdBird, this);
     // 子弹A和敌机A碰撞
     this.physics.add.overlap(bulletsA, enemiesA, this.hit, null, this);
     // 子弹A和敌机B碰撞
@@ -416,22 +474,22 @@ export class Main extends Scene {
   }
   onHeroUpgrade(hero) {
     // levelLabel.setTexture("levelNumber", "level" + String(hero.level));
-    levelText.setText(`${hero.level}`)
+    levelText.setText(`${hero.level}`);
     // 处理英雄升级后的逻辑
-    console.log("英雄升级！！！！！！！！！！！！！！！！！！！", hero);
+    console.log("英雄升级！！！！！", hero);
     //所有敌机升级
     enemiesA.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
-    })
+    });
     enemiesB.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
-    })
+    });
     enemiesFast.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
-    })
+    });
     enemiesBoss.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
-    })
+    });
     // bulletFireBird.fire(hero.x, hero.y - 32);
     for (let i = 0; i < 3; i++) {
       this.spawnEnemy("enemyA");
@@ -439,10 +497,10 @@ export class Main extends Scene {
     for (let i = 0; i < 2; i++) {
       this.spawnEnemy("enemyB");
     }
-    for (let i = 0; i < 2 ; i++) {
+    for (let i = 0; i < 2; i++) {
       this.spawnEnemy("enemyFast");
     }
-    if (hero.level ) {
+    if (hero.level) {
       this.spawnEnemy("enemyBoss");
     }
     // 例如，更新UI、播放音效、增加分数等
@@ -477,7 +535,7 @@ export class Main extends Scene {
       const digit = parseInt(scoreStr[i]);
       const sprite = this.add
         .sprite(position.x, position.y, "number", digit)
-        .setScale(0.3) 
+        .setScale(0.3)
         .setOrigin(1, 0); // 右上角对齐
       scoreGroup.add(sprite); // 将显示数字添加到Group中
       position.x -= 20;
@@ -490,7 +548,7 @@ export class Main extends Scene {
   injured(hero, enemy) {
     // 将敌机销毁
     enemy.killed();
-    hero.reduceHp(1)
+    hero.reduceHp(1);
     hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
     powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     if (hero.hp <= 0) {
@@ -499,7 +557,6 @@ export class Main extends Scene {
       hero.disableBody(true, true);
       this.gameOver();
     }
-
   }
   // 游戏结束
   gameOver() {
@@ -517,7 +574,7 @@ export class Main extends Scene {
         hero.growExp(supply.takeSupply());
         break;
       case "Hp":
-        hero.supplyHp(supply.takeSupply());  
+        hero.supplyHp(supply.takeSupply());
         hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
         break;
       case "Pow":
@@ -526,10 +583,65 @@ export class Main extends Scene {
         break;
     }
   }
+  //获得技能
+  onGetSkill(skill: Skill) {
+    //在主场景新建技能
+    skill = SkillFactory.createSkill(this, skill.name);
+    selectedSkillGroup.add(skill)
+    console.log(selectedSkillGroup.getChildren());
+    if (skill.type === "active") {
+      // const activeSkillBtn = activeSkillContainer.getAt(
+      //   activeSkillContainer.length - 1
+      // ) as GameObjects.Sprite;
+      const activeSkill = this.add
+        .image(35, 50, skill.icon)
+        .setOrigin(0.5)
+        .setVisible(true)
+        .setInteractive()
+        .setDisplaySize(40, 40)
+        .on("pointerdown", () => {
+          console.log(selectedSkillGroup.getChildren());
+          console.log(666);
+          
+          const skill = selectedSkillGroup.getMatching("type", "active")[0];
+          console.log(skill);
+          skill.useSkill();
+        });
+      activeSkillContainer.add(activeSkill);
+      return;
+    }
+  }
+  fireBulletFirdBird() {
+    bulletFireBird.fire(hero.x, hero.y - 32);
+  }
+  // getSkillContainer() {
+  //   this.sys.pause();
+  //   this.events.on("pointerdown", () => {
+  //     console.log("555");
+      
+  //   }, this);
+  //   // this.scene.resume()
+  //   let allElements = skillGroup.getChildren();
+  //   let selectedElements = [];
+  //   for (let i = allElements.length - 1; i > 0; i--) {
+  //     // 随机选择一个从开始到当前索引的元素
+  //     let j = Math.floor(Math.random() * (i + 1));
+  //     // 交换元素
+  //     [allElements[i], allElements[j]] = [allElements[j], allElements[i]];
+  //   }
+  //   // 现在 allElements 数组的前三个元素是随机的，且不重复
+  //   selectedElements = allElements.slice(0, 3);
+  //   selectedElements.forEach((skill, index) => {
+  //     skill.born(index);
+  //     skillContainer.add(skill);
+  //   });
+  //   skillContainer.setVisible(true);
+  // }
   // 每一帧的回调
   update() {
     background.tilePositionY -= 1;
     this.updateDisplayScore();
-    expRatio.displayWidth = (hero.level < 25 ? hero.getExpRatio() : 1) * expRatio.width;
+    expRatio.displayWidth =
+      (hero.level < 25 ? hero.getExpRatio() : 1) * expRatio.width;
   }
 }

@@ -57,6 +57,24 @@ import progressBarContentYellowImg from "../assets/image/interface/progress_bar_
 import progressBarBgBlueImg from "../assets/image/interface/progress_bar_bg_blue.png"
 import progressBarContentBlueImg from "../assets/image/interface/progress_bar_content_blue.png"
 
+import chooseBtnImg from "../assets/image/skill/btn_choose.png"
+import cardfireBirdImg from "../assets/image/skill/card_firebird.png";
+import iconfireBirdImg from "../assets/image/skill/icon_firebird.png";
+import cardBombImg from "../assets/image/skill/card_bomb.png";
+import iconBombImg from "../assets/image/skill/icon_firebird.png";
+import cardLaserImg from "../assets/image/skill/card_laser.png";
+import iconLaserImg from "../assets/image/skill/icon_firebird.png";
+import cardSuperBulletImg from "../assets/image/skill/card_superBullet.png";
+import iconSuperBulletImg from "../assets/image/skill/icon_firebird.png";
+import cardPowImg from "../assets/image/skill/card_pow.png";
+import cardHp1Img from "../assets/image/skill/card_hp1.png";
+import cardHp2Img from "../assets/image/skill/card_hp2.png";
+import cardExpImg from "../assets/image/skill/card_exp.png";
+import cardBullet1Img from "../assets/image/skill/card_bullet1.png";
+import cardBullet2Img from "../assets/image/skill/card_bullet2.png";
+import cardBullet3Img from "../assets/image/skill/card_bullet3.png";
+
+
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
 // import bulletAudio from "../assets/audio/bullet.mp3";
@@ -116,6 +134,23 @@ export class Preloader extends Scene {
     this.load.image("chooseHeroBg", chooseHeroBgImg);
     this.load.image("btnPre", btnPreImg);
     this.load.image("btnNext", btnNextImg);
+    // 加载技能卡片资源
+    this.load.image("chooseBtn", chooseBtnImg);
+    this.load.image("cardFirebird", cardfireBirdImg);
+    this.load.image("iconFirebird", iconfireBirdImg);
+    this.load.image("cardBomb", cardBombImg);
+    this.load.image("iconBomb", iconBombImg);
+    this.load.image("cardLaser", cardLaserImg);
+    this.load.image("iconLaser", iconLaserImg);
+    this.load.image("cardSuperBullet", cardSuperBulletImg);
+    this.load.image("iconSuperBullet", iconSuperBulletImg);
+    this.load.image("cardPow", cardPowImg);
+    this.load.image("cardHp1", cardHp1Img);
+    this.load.image("cardHp2", cardHp2Img);
+    this.load.image("cardExp", cardExpImg);
+    this.load.image("cardBullet1", cardBullet1Img);
+    this.load.image("cardBullet2", cardBullet2Img);
+    this.load.image("cardBullet3", cardBullet3Img);
     // 加载音频资源
     this.load.audio("bgm", bgmAudio);
     this.load.audio("boom", boomAudio);
