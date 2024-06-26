@@ -282,7 +282,7 @@ export class Main extends Scene {
     expRatio.displayWidth = hero.getExpRatio() * expRatio.width;
     // skillGroup = this.add.group();
     selectedSkillGroup = this.add.group();
-     // 技能选择容器
+    // 技能选择容器
     // skillContainer = this.add.container(this.width / 2, 200).setVisible(false);
     // const skillActive1 = SkillFactory.createSkill(this, "SkillActive1");
     // const skillActive2 = SkillFactory.createSkill(this, "SkillActive2");
@@ -306,13 +306,10 @@ export class Main extends Scene {
     //   .setInteractive()
     //   .on("pointerdown", () => {
     //     console.log("主动技能1");
-    //     const skill = selectedSkillGroup.getMatching("type", "active")[0]; 
+    //     const skill = selectedSkillGroup.getMatching("type", "active")[0];
     //     console.log(skill);
     //     skill.useSkill();
     //   });
-      this.scene.pause();
-      this.game.scene.start("ChooseSkill");
-
     // const activeSkill2 = this.add
     //   .image(35, 50, "iconFirebird")
     //   .setOrigin(0.5)
@@ -477,6 +474,8 @@ export class Main extends Scene {
     levelText.setText(`${hero.level}`);
     // 处理英雄升级后的逻辑
     console.log("英雄升级！！！！！", hero);
+    this.scene.pause();
+    this.game.scene.start("ChooseSkill");
     //所有敌机升级
     enemiesA.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
@@ -587,12 +586,9 @@ export class Main extends Scene {
   onGetSkill(skill: Skill) {
     //在主场景新建技能
     skill = SkillFactory.createSkill(this, skill.name);
-    selectedSkillGroup.add(skill)
+    selectedSkillGroup.add(skill);
     console.log(selectedSkillGroup.getChildren());
     if (skill.type === "active") {
-      // const activeSkillBtn = activeSkillContainer.getAt(
-      //   activeSkillContainer.length - 1
-      // ) as GameObjects.Sprite;
       const activeSkill = this.add
         .image(35, 50, skill.icon)
         .setOrigin(0.5)
@@ -600,11 +596,9 @@ export class Main extends Scene {
         .setInteractive()
         .setDisplaySize(40, 40)
         .on("pointerdown", () => {
-          console.log(selectedSkillGroup.getChildren());
-          console.log(666);
-          
-          const skill = selectedSkillGroup.getMatching("type", "active")[0];
-          console.log(skill);
+          const skill = selectedSkillGroup.getMatching("type", "active")[
+            activeSkillContainer.length - 1
+          ];
           skill.useSkill();
         });
       activeSkillContainer.add(activeSkill);
@@ -614,11 +608,24 @@ export class Main extends Scene {
   fireBulletFirdBird() {
     bulletFireBird.fire(hero.x, hero.y - 32);
   }
+  skillToImproveVelocity(skill: Skill) {
+    bulletsA.getChildren().forEach((bullet) => {
+      (bullet as Bullet).velocity *= 1 - skill.value;
+    });
+  }
+  skillToRestoreHp(skill: Skill) {
+    console.log("英雄机生命值回满");
+    hero.hp = hero.maxHp;
+  }
+  skillToImproveHp(skill: Skill) {
+    console.log("英雄机最大生命值+1");
+    hero.maxHp += 1;
+  }
   // getSkillContainer() {
   //   this.sys.pause();
   //   this.events.on("pointerdown", () => {
   //     console.log("555");
-      
+
   //   }, this);
   //   // this.scene.resume()
   //   let allElements = skillGroup.getChildren();

@@ -3,7 +3,7 @@ import { Skill } from "./Skill";
 
 export class SkillBullet1 extends Skill {
   type: string = "bullet";
-  name: string = "bullet1";
+  name: string = "SkillBullet1";
   value: number = 0.3;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
@@ -19,5 +19,6 @@ export class SkillBullet1 extends Skill {
   }
   useSkill() {
     console.log("技能被使用了");
+    this.scene.events.emit("skillToImproveVelocity", this);
   }
 }

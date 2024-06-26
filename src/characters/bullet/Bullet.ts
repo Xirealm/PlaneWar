@@ -4,7 +4,7 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
   bulletType: string;
   damage: number; // 子弹造成的伤害
   size: number = 0.5; // 子弹初始大小
-  fireVelocity: number = 250; // 子弹飞机速度
+  velocity: number = 250; // 子弹飞机速度
   constructor(
     scene: Scene,
     x: number,
@@ -26,7 +26,7 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
    */
   fire(x: number, y: number) {
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(-this.fireVelocity);
+    this.setVelocityY(-this.velocity);
     // this.scene.sound.play("bullet");
   }
   upgrade(level: number) {

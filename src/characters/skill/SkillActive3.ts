@@ -4,8 +4,8 @@ import { Skill } from "./Skill";
 export class SkillActive3 extends Skill {
   type: string = "active";
   icon: string = "iconLaser";
-  name: string = "active3";
-  pow: number = 5; 
+  name: string = "SkillActive2";
+  pow: number = 5;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
     scene.add.existing(this);

@@ -4,7 +4,7 @@ import { Skill } from "./Skill";
 export class SkillActive4 extends Skill {
   type: string = "active";
   icon: string = "iconSuperBullet";
-  name: string = "active3";
+  name: string = "SkillActive4";
   pow: number = 3;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);

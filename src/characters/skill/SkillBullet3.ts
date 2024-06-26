@@ -3,7 +3,7 @@ import { Skill } from "./Skill";
 
 export class SkillBullet3 extends Skill {
   type: string = "bullet";
-  name: string = "bullet3";
+  name: string = "SkillBullet2";
   value: number = 10;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);

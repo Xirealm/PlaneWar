@@ -4,7 +4,7 @@ import { Skill } from "./Skill";
 export class SkillActive2 extends Skill {
   type: string = "active";
   icon: string = "iconBomb";
-  name: string = "active2";
+  name: string = "SkillActive2";
   pow: number = 8; //使用技能需要消耗能量
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);

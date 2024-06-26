@@ -2,8 +2,9 @@ import { GameObjects, Scene, Math } from "phaser";
 import { Skill } from "./Skill";
 
 export class SkillHp2 extends Skill {
+  //英雄最大生命值+1
   type: string = "hp";
-  name: string = "hp2";
+  name: string = "SkillHp2";
   value: number = 1;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
@@ -19,5 +20,6 @@ export class SkillHp2 extends Skill {
   }
   useSkill() {
     console.log("技能被使用了");
+    this.scene.events.emit("skillToImproveHp", this);
   }
 }
