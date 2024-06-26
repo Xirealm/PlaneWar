@@ -14,6 +14,5 @@ export class BulletFireBird extends Bullet {
     this.enableBody(true, x, y, true, true);
     this.setVelocityY(-this.fireVelocity);
     this.play("bulletFireBird");
-    console.log("火鸟6666666666666666666子弹发射");
   }
 }

@@ -34,7 +34,6 @@ onMounted(() => {
         scene: [Preloader, Login , Home , Main , Pause, End],
     });
 });
- 
 onUnmounted(() => {
     game.destroy(true);
 });

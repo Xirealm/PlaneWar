@@ -419,6 +419,7 @@ export class Main extends Scene {
     levelText.setText(`${hero.level}`)
     // 处理英雄升级后的逻辑
     console.log("英雄升级！！！！！！！！！！！！！！！！！！！", hero);
+    //所有敌机升级
     enemiesA.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
     })
@@ -431,17 +432,17 @@ export class Main extends Scene {
     enemiesBoss.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
     })
-    bulletFireBird.fire(hero.x, hero.y - 32);
-    for (let i = 0; i < 5; i++) {
+    // bulletFireBird.fire(hero.x, hero.y - 32);
+    for (let i = 0; i < 3; i++) {
       this.spawnEnemy("enemyA");
     }
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       this.spawnEnemy("enemyB");
     }
-    for (let i = 0; i < 3 ; i++) {
+    for (let i = 0; i < 2 ; i++) {
       this.spawnEnemy("enemyFast");
     }
-    if (hero.level >=3) {
+    if (hero.level ) {
       this.spawnEnemy("enemyBoss");
     }
     // 例如，更新UI、播放音效、增加分数等
@@ -466,7 +467,7 @@ export class Main extends Scene {
     hero.growExp(enemy.exp);
   }
   updateDisplayScore() {
-    // 清除原有的数字精灵
+    // 清除原有的数字
     scoreGroup.getChildren().forEach((item) => {
       item.destroy();
     });
@@ -476,9 +477,9 @@ export class Main extends Scene {
       const digit = parseInt(scoreStr[i]);
       const sprite = this.add
         .sprite(position.x, position.y, "number", digit)
-        .setScale(0.3) // 调整大小
-        .setOrigin(1, 0); // 设置向右上角对齐
-      scoreGroup.add(sprite); // 将精灵添加到Group中
+        .setScale(0.3) 
+        .setOrigin(1, 0); // 右上角对齐
+      scoreGroup.add(sprite); // 将显示数字添加到Group中
       position.x -= 20;
     }
   }
@@ -514,7 +515,6 @@ export class Main extends Scene {
     switch (supply.supplyType) {
       case "Exp":
         hero.growExp(supply.takeSupply());
-        // console.log("英雄当前经验值为：", hero.exp);
         break;
       case "Hp":
         hero.supplyHp(supply.takeSupply());  

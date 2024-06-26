@@ -2,8 +2,8 @@ import { Scene,Math } from "phaser";
 import { Enemy } from "./Enemy";
 
 export class EnemyB extends Enemy {
-  hp: number = 10; // 敌机B的生命值
-  maxHp: number = 10; //敌机最大生命值
+  hp: number = 100; // 敌机B的生命值
+  maxHp: number = 100; //敌机最大生命值
   score: number = 5; //敌机B的分数
   exp: number = 3;
   constructor(scene: Scene, x: number, y: number) {
@@ -14,10 +14,5 @@ export class EnemyB extends Enemy {
     super.born();
     this.setVelocityY(100);
     // console.log("敌机B生成血量为", this.hp);
-  }
-  //敌机受到伤害
-  takeDamage(damage: number): void {
-    this.hp -= damage;
-    // console.log("EnemyB被攻击，剩余血量：", this.hp);
   }
 }

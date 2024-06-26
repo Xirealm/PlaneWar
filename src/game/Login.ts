@@ -13,10 +13,8 @@ export class Login extends Scene {
     const loginPanelBg = this.add
       .image(width / 2, height / 2 - 50, "loginPanel", "bg")
       .setDisplaySize(width * 0.72, height * 0.25);
-      
     const loginPanel = this.add.container(width / 2, height / 2 - 50);
     const registerPanel = this.add.container(width / 2, height / 2 - 50);
-    
     const usernameLabel = this.add.text(-100, -40, "账 号", {
       fontFamily: "Arial",
       fontSize: "16px",

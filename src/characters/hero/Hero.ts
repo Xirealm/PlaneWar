@@ -12,6 +12,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   pow: number = 0; // 英雄的能量值
   bullets: Physics.Arcade.Group; //英雄的子弹组
   fireFrequency: number = 300; // 子弹的发射频率
+  //英雄机移动相关属性
   isDown: boolean = false;
   downX: number;
   downY: number;
@@ -62,10 +63,11 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       //子弹发射频率
       delay: this.fireFrequency,
       callback: () => {
-        if (this.level === 1) {
+        if (this.level >= 1 && this.level <= 5) {
           const bullet = this.bullets.getFirstDead();
           bullet.fire(this.x, this.y - 32);
-        } else if (this.level === 2) {
+        }
+        else if (this.level >= 6 && this.level <= 15) {
           for (let i = 0; i < 2; i++) {
             const bullet = this.bullets.getFirstDead();
             if (i === 0) {
@@ -74,7 +76,8 @@ export abstract class Hero extends Physics.Arcade.Sprite {
               bullet.fire(this.x + 10, this.y - 32);
             }
           }
-        } else if (this.level >= 3 && this.level <= 4) {
+        }
+        else if (this.level >= 16 && this.level <= 20) {
           for (let i = 0; i < 4; i++) {
             const bullet = this.bullets.getFirstDead();
             if (i === 0) {
@@ -87,7 +90,8 @@ export abstract class Hero extends Physics.Arcade.Sprite {
               bullet.fire(this.x + 25, this.y - 15);
             }
           }
-        } else {
+        }
+        else {
           for (let i = 0; i < 5; i++) {
             const bullet = this.bullets.getFirstDead();
             if (i === 0) {

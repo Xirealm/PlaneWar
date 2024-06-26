@@ -35,7 +35,7 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
   upgrade(level: number) {
     this.maxHp = this.maxHp * 2;
     this.score = this.score * 2;
-    this.exp = this.score * 2;
+    this.exp = this.exp * 2;
     console.log("敌人升级!!!!!!!!!!!!!!!!!!");
   }
   preUpdate(time: number, delta: number) {
@@ -50,7 +50,7 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
   }
   born() {
     let x = Math.Between(this.width - 10, 345);
-    let y = Math.Between(-this.height, -this.height * 5);
+    let y = Math.Between(-this.height, -this.height * 10);
     this.hp = this.maxHp;
     this.enableBody(true, x, y, true, true);
     this.hpBar.setVisible(true);
@@ -61,5 +61,14 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.hpBar.setVisible(false);
     this.hpBar.setActive(false);
   }
-  abstract takeDamage(damage: number): void;
+  takeDamage(damage: number): void {
+    this.hp -= damage;
+    let demage = this.scene.add.text(this.x, this.y, `${damage}`, {
+      fontSize: "20px",
+      color:"orange"
+    });
+    setTimeout(() => {
+      demage.destroy();
+    }, 500);
+  }
 }
