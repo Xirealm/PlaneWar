@@ -12,9 +12,8 @@ export class Boom extends GameObjects.Sprite {
         this.y = y;
         this.setActive(true);
         this.setVisible(true);
-        console.log("发生了爆炸");
         this.play("boom");
-        this.scene.sound.play("boom");
+        // this.scene.sound.play("boom");
     }
     // 隐藏爆炸
     hide() {

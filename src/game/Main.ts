@@ -42,7 +42,9 @@ let hpRatio: GameObjects.Image;
 let powRatio: GameObjects.Image;
 let expRatio: GameObjects.Image;
 let levelLabel: GameObjects.Image;
+let levelText: GameObjects.Text;
 let scoreGroup: GameObjects.Group;
+let levelContainer: GameObjects.Container;
 // 场景数据
 let score: number;
 
@@ -195,7 +197,7 @@ export class Main extends Scene {
     hero.setBullets(bulletsA);
     //初始化分数;
     score = 0;
-    scoreGroup = this.add.group(); // 创建一个Group来存放所有数字
+    scoreGroup = this.add.group(); // 创建一个Group来存放所有得分数字
     // Hp进度条
     const hpLabel = this.add.image(0, 5, "hpLabel").setOrigin(0).setScale(0.5);
     this.add
@@ -248,20 +250,31 @@ export class Main extends Scene {
       .setOrigin(0);
     powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     // 经验进度条
-    levelLabel = this.add
-      .sprite(width / 2 + 30, 80, "levelNumber", "level1")
-      .setScale(0.4)
+    levelContainer = this.add.container(width / 2, 80);
+    // levelLabel = this.add
+    //   .sprite(width / 2 + 30, 80, "levelNumber", "level1")
+    //   .setScale(0.4)
+    //   .setDepth(1);
+    levelText = this.add
+      .text(width / 2, 85, "1", {
+        font: "25px bold Arial",
+        color: "#8abbe3",
+        strokeThickness: 4,
+        stroke: "#2663b9",
+        fontStyle: "strong",
+      })
+      .setOrigin(0.5)
       .setDepth(1);
     const expBg = this.add
       .image(width / 2, 80, "progressBarBgBlue")
       .setInteractive()
-      .setDisplaySize(230, 8)
+      .setDisplaySize(250, 8)
       .setAlpha(0.8)
       .setOrigin(0.5, 0);
     expRatio = this.add
       .image(expBg.x - expBg.displayWidth / 2, 80, "progressBarContentBlue")
       .setInteractive()
-      .setSize(230, 8)
+      .setSize(250, 8)
       .setDisplaySize(0, 8)
       .setAlpha(0.8)
       .setOrigin(0);
@@ -402,7 +415,8 @@ export class Main extends Scene {
     }
   }
   onHeroUpgrade(hero) {
-    levelLabel.setTexture("levelNumber","level"+String(hero.level))
+    // levelLabel.setTexture("levelNumber", "level" + String(hero.level));
+    levelText.setText(`${hero.level}`)
     // 处理英雄升级后的逻辑
     console.log("英雄升级！！！！！！！！！！！！！！！！！！！", hero);
     enemiesA.getChildren().forEach((enemy) => {
@@ -434,7 +448,7 @@ export class Main extends Scene {
   }
   // 子弹击中敌军
   hit(bullet, enemy) {
-    console.log("子弹击中敌机,伤害为" + bullet.damage);
+    // console.log("子弹击中敌机,伤害为" + bullet.damage);
     if (bullet.bulletType === "baseBullet") {
       bullet.disableBody(true, true); //销毁子弹
     }
@@ -516,6 +530,6 @@ export class Main extends Scene {
   update() {
     background.tilePositionY -= 1;
     this.updateDisplayScore();
-    expRatio.displayWidth = (hero.level < 5 ? hero.getExpRatio() : 1) * expRatio.width;
+    expRatio.displayWidth = (hero.level < 25 ? hero.getExpRatio() : 1) * expRatio.width;
   }
 }

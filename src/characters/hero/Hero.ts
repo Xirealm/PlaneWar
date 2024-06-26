@@ -108,8 +108,12 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       loop: true, // 循环生成
     });
   }
-  growExp(value: number) {
-    if (this.level === 5) return;
+  /**
+   * 增长经验
+   * @param value 所增长的经验值
+   */
+  growExp(value: number): void {
+    if (this.level === 25) return;
     this.exp += value;
     const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
     this.expToNextLevel = expToNextLevel;
@@ -122,6 +126,23 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       });
       // console.log("距离升到",newLevel + 1,"级还差",expToNextLevel,"经验值");
     }
+  }
+  /**
+   * 英雄机升级
+   * @param level 升级等级
+   */
+  upgrade(level: number): void {
+    this.level = level;
+    // 抛出升级事件
+    this.scene.events.emit("heroUpgrade", this);
+    if(this.level % 5 === 1 )
+    this.fireFrequency -= 20;
+    // 移除现有的定时器
+    if (this.fireEvent) {
+      this.scene.time.removeEvent(this.fireEvent);
+    }
+    // 重新设置发射事件
+    this.initFireEvent();
   }
   /**
    * 补给生命方法
@@ -155,27 +176,17 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       console.log("能量已满");
     }
   }
-  //升级方法
-  upgrade(level: number): void {
-    this.level = level;
-    // 抛出升级事件
-    this.scene.events.emit("heroUpgrade", this);
-    this.fireFrequency = this.fireFrequency * 0.8;
-    // 移除现有的定时器
-    if (this.fireEvent) {
-      this.scene.time.removeEvent(this.fireEvent);
-    }
-    // 重新设置发射事件
-    this.initFireEvent();
-  }
   getHpRatio(): number {
     return this.hp / this.maxHp;
   }
   getPowRatio(): number {
     return this.pow / this.maxPow;
   }
-  getExpRatio(): number{
+  getExpRatio(): number {
     const { expToNextLevel } = calcLevelAndRemainingExp(this.exp);
-    return  (expRequiredToLevel(this.level + 1)-expToNextLevel) / expRequiredToLevel(this.level + 1);
+    return (
+      (expRequiredToLevel(this.level + 1) - expToNextLevel) /
+      expRequiredToLevel(this.level + 1)
+    );
   }
 }
