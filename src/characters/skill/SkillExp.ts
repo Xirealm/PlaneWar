@@ -5,6 +5,7 @@ export class SkillExp extends Skill {
   type: string = "exp";
   name: string = "SkillExp";
   value: number = 0.2;
+  level = 0
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
     scene.add.existing(this);
@@ -16,6 +17,7 @@ export class SkillExp extends Skill {
   }
   useSkill() {
     console.log("技能智慧之环被使用了");
+    this.level++;
     this.scene.scene.get("Main").events.emit("skillToImproveExpRate", this);
   }
 }

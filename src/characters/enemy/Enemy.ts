@@ -36,7 +36,6 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.maxHp = this.maxHp * 1.2;
     this.score = this.score * 2;
     this.exp = this.exp * 2;
-    console.log("敌人升级!!!!!!!!!!!!!!!!!!");
   }
   preUpdate(time: number, delta: number) {
     super.preUpdate(time, delta);

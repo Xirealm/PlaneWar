@@ -31,7 +31,7 @@ export class Login extends Scene {
       .setOrigin(0, 0.5);
     const accountElement = document.createElement("input");
     accountElement.setAttribute("id", "account");
-    accountElement.placeholder = "输入账号名/手机号";
+    // accountElement.placeholder = "输入账号名/手机号";
     const accountInput = this.add
       .dom(accountInputBg.x + 5, accountInputBg.y, accountElement, {
         backgroundColor: "transparent",
@@ -60,7 +60,7 @@ export class Login extends Scene {
       const passwordElement = document.createElement("input");
       passwordElement.setAttribute("id", "password");
       passwordElement.type = "password";
-      passwordElement.placeholder = "输入密码";
+      // passwordElement.placeholder = "输入密码";
       const passwordInput = this.add
         .dom(passwordInputBg.x + 5, passwordInputBg.y, passwordElement, {
           backgroundColor: "transparent",
@@ -138,7 +138,7 @@ export class Login extends Scene {
       .setOrigin(0, 0.5);
     const registerTelElement = document.createElement("input");
     registerTelElement.setAttribute("id", "tel");
-    registerTelElement.placeholder = "输入手机号";
+    // registerTelElement.placeholder = "输入手机号";
     const registerTelInput = this.add
       .dom(
         registerTelInputBg.x + 5,
@@ -234,7 +234,7 @@ export class Login extends Scene {
       .setOrigin(0, 0.5);
       const registerUsernameElement = document.createElement("input");
       registerUsernameElement.setAttribute("id", "registerPwd");
-      registerUsernameElement.placeholder = "输入用户名";
+      // registerUsernameElement.placeholder = "输入用户名";
       const registerUsernameInput = this.add
         .dom(
           registerUsernameInputBg.x + 5,
@@ -272,7 +272,7 @@ export class Login extends Scene {
       .setOrigin(0, 0.5);
     const registerPasswordElement = document.createElement("input");
     registerPasswordElement.setAttribute("id", "registerUsername");
-    registerPasswordElement.placeholder = "输入密码";
+    // registerPasswordElement.placeholder = "输入密码";
     const registerPasswordInput = this.add
       .dom(
         registerPasswordInputBg.x + 5,

@@ -1,4 +1,6 @@
-import { Scene, GameObjects, type Types, Physics} from "phaser";
+import { Scene, GameObjects, type Types, Physics } from "phaser";
+
+import { ChooseSkill } from "./ChooseSkill";
 
 import { HeroFactory } from "../characters/hero/HeroFactory";
 import { Hero } from "../characters/hero/Hero"
@@ -14,7 +16,6 @@ import { BulletFactory } from "../characters/bullet/BulletFactory";
 import { Bullet } from "../characters/bullet/Bullet"
 import { BulletA } from "../characters/bullet/BulletA";
 import { BulletFireBird } from "../characters/bullet/BulletFireBird";
-
 
 import { SupplyFactory } from "../characters/supply/SupplyFactory";
 import { Supply } from "../characters/supply/Supply"
@@ -47,6 +48,7 @@ let powRatio: GameObjects.Image;
 let expRatio: GameObjects.Image;
 let levelText: GameObjects.Text;
 let scoreGroup: GameObjects.Group;
+let chooseSkillScene: Scene;
 let skillContainer: GameObjects.Container; //技能选择容器
 let activeSkillContainer: GameObjects.Container; //主动技能容器
 let skillGroup: GameObjects.Group; //技能组
@@ -281,6 +283,7 @@ export class Main extends Scene {
       .setAlpha(0.8)
       .setOrigin(0);
     expRatio.displayWidth = hero.getExpRatio() * expRatio.width;
+    // chooseSkillScene = this.scene.add("chooseSkill", new ChooseSkill(), true);
     // skillGroup = this.add.group();
     selectedSkillGroup = this.add.group();
     // 技能选择容器
@@ -338,7 +341,7 @@ export class Main extends Scene {
   //注册事件
   addEvent() {
     this.time.addEvent({
-      delay: 1500, // 定时器 每1.5秒生成2个敌机
+      delay: 3000, // 定时器 每3秒生成2个敌机
       callback: () => {
         for (let i = 0; i < 2; i++) {
           this.spawnEnemy("enemyA");
@@ -486,12 +489,15 @@ export class Main extends Scene {
     }
   }
   onHeroUpgrade(hero) {
-    // levelLabel.setTexture("levelNumber", "level" + String(hero.level));
+    console.log("英雄升级！！！！！！！！！", hero);
     levelText.setText(`${hero.level}`);
     // 处理英雄升级后的逻辑
-    console.log("英雄升级！！！！！", hero);
     this.scene.pause();
-    this.game.scene.start("ChooseSkill");
+    if (hero.level == 2) {
+      this.game.scene.start("ChooseSkill");
+    } else {
+      this.game.scene.wake("ChooseSkill");
+    }
     //所有敌机升级
     enemiesA.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
@@ -526,8 +532,6 @@ export class Main extends Scene {
     if (bullet.bulletType === "baseBullet") {
       bullet.disableBody(true, true); //销毁子弹
     }
-    console.log(bullet.getDemage());
-
     enemy.takeDamage(bullet.getDemage()); //对敌机减血
     if (enemy.hp <= 0) {
       this.kill(bullet, enemy);
@@ -607,7 +611,7 @@ export class Main extends Scene {
       skill = SkillFactory.createSkill(this, skill.name);
       selectedSkillGroup.add(skill);
       const activeSkill = this.add
-        .image(35, 50, skill.icon)
+        .image(35, 50 * activeSkillContainer.length, skill.icon)
         .setOrigin(0.5)
         .setVisible(true)
         .setInteractive()
@@ -634,19 +638,20 @@ export class Main extends Scene {
   }
   skillToImproveVelocity(skill: Skill) {
     bulletsA.getChildren().forEach((bullet) => {
+      //子弹速度提高
       (bullet as Bullet).velocityRate = 1 + skill.value;
+      hero.fireFrequency = hero.fireFrequency - (hero.fireFrequency / 2) * skill.value
     });
   }
   skillToImproveDemageRate(skill: Skill) {
     bulletsA.getChildren().forEach((bullet) => {
       console.log("子弹伤害倍率提升");
-      (bullet as Bullet).demageRate = 1 + skill.value;
+      (bullet as Bullet).demageRate += skill.value;
     });
   }
   skillToImproveBaseDemage(skill: Skill) {
     bulletsA.getChildren().forEach((bullet) => {
       console.log("子弹基础伤害提升");
-
       (bullet as Bullet).baseDemage += skill.value;
     });
   }

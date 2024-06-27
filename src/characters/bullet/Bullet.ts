@@ -32,7 +32,7 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
     // this.scene.sound.play("bullet");
   }
   getDemage():number {
-    return this.baseDemage * this.demageRate;
+    return Math.ceil(this.baseDemage * this.demageRate);
   }
   upgrade(level: number) {
     console.log("子弹升级到", level / 5,"阶段");

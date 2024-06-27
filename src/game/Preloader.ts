@@ -69,11 +69,11 @@ import chooseBtnImg from "../assets/image/skill/btn_choose.png"
 import cardfireBirdImg from "../assets/image/skill/card_firebird.png";
 import iconfireBirdImg from "../assets/image/skill/icon_firebird.png";
 import cardBombImg from "../assets/image/skill/card_bomb.png";
-import iconBombImg from "../assets/image/skill/icon_firebird.png";
+import iconBombImg from "../assets/image/skill/icon_bomb.png";
 import cardLaserImg from "../assets/image/skill/card_laser.png";
-import iconLaserImg from "../assets/image/skill/icon_firebird.png";
+import iconLaserImg from "../assets/image/skill/icon_laser.png";
 import cardSuperBulletImg from "../assets/image/skill/card_superBullet.png";
-import iconSuperBulletImg from "../assets/image/skill/icon_firebird.png";
+import iconSuperBulletImg from "../assets/image/skill/icon_superBullet.png";
 import cardPowImg from "../assets/image/skill/card_pow.png";
 import cardHp1Img from "../assets/image/skill/card_hp1.png";
 import cardHp2Img from "../assets/image/skill/card_hp2.png";

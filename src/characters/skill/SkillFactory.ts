@@ -11,7 +11,6 @@ import { SkillBullet1 } from "./SkillBullet1";
 import { SkillBullet2 } from "./SkillBullet2";
 import { SkillBullet3 } from "./SkillBullet3";
 
-
 export class SkillFactory {
     static createSkill(scene: Scene, type: string) {
         switch (type) {

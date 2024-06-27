@@ -3,8 +3,8 @@ import { SkillFactory } from "../characters/skill/SkillFactory";
 import { Skill } from "../characters/skill/Skill";
 import { SkillActive1 } from "../characters/skill/SkillActive1";
 
-
 let skillGroup: GameObjects.Group; //技能组
+let selectedSkillGroup: GameObjects.Group; //技能组
 let skillContainer: GameObjects.Container; //技能选择容器
 
 export class ChooseSkill extends Scene {
@@ -17,8 +17,10 @@ export class ChooseSkill extends Scene {
       .rectangle(0, 0, width, height, 0x000000)
       .setOrigin(0, 0)
       .setAlpha(0.5);
+    // this.scene.pause();
     skillContainer = this.add.container(width / 2, 200).setVisible(false);
     skillGroup = this.add.group();
+    selectedSkillGroup = this.add.group();
     const skillActive1 = SkillFactory.createSkill(this, "SkillActive1");
     const skillActive2 = SkillFactory.createSkill(this, "SkillActive2");
     const skillActive3 = SkillFactory.createSkill(this, "SkillActive3");
@@ -41,15 +43,20 @@ export class ChooseSkill extends Scene {
     skillGroup.add(skillBullet1);
     skillGroup.add(skillBullet2);
     skillGroup.add(skillBullet3);
-    // console.log(skillGroup);
     //随机抽取3个技能
     this.getSkillContainer();
     this.events.on("getSkill", this.onGetSkill, this);
+    this.events.on("wake", () => {
+      this.getSkillContainer();
+    });
   }
+
+  // }
   getSkillContainer() {
-    this.sys.pause();
-    console.log(skillGroup.getChildren());
+    // this.sys.pause();
+    // this.game.scene.stop("ChooseSkill");
     let allElements = skillGroup.getChildren();
+    console.log(allElements.length);
     let selectedElements = [];
     for (let i = allElements.length - 1; i > 0; i--) {
       // 随机选择一个从开始到当前索引的元素
@@ -63,13 +70,26 @@ export class ChooseSkill extends Scene {
       skill.born(index);
       skillContainer.add(skill);
     });
+    console.log(selectedElements);
     skillContainer.setVisible(true);
   }
   //获得技能
   onGetSkill(skill: Skill) {
+    //找了很久才找到的bug
+    skillContainer.getAll().forEach((skill) => {
+      skill.destroy()
+    });
     if (skill.type === "active") {
-        skillGroup.remove(skill)
-        console.log(skillGroup.getChildren());
+      skillGroup.remove(skill);
+      console.log("获得了主动技能");
+      console.log(skillGroup.getChildren());
     }
+    if (skill.level === 5) {
+      skillGroup.remove(skill);
+    }
+    selectedSkillGroup.add(skill);
+    console.log("目前获得的技能");
+    console.log(selectedSkillGroup.getChildren());
+    // this.registry.set("selectedSkill","")
   }
 }

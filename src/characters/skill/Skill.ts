@@ -5,6 +5,7 @@ export abstract class Skill extends GameObjects.Container {
   supplyType: string; // 补给类型
   icon?: string;
   value?: number; //技能对应数值
+  level?: number; //技能对应等级
   pow?: number;//主动技能消耗能量值
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
@@ -30,9 +31,8 @@ export abstract class Skill extends GameObjects.Container {
   }
   getSkill() {
     this.scene.scene.resume("Main");
-    this.scene.scene.stop("ChooseSkill");
+    this.scene.scene.sleep("ChooseSkill");
     console.log("获得技能");
-    console.log(this.scene);
     this.scene.scene.get("Main").events.emit("getSkill", this)
     this.scene.events.emit("getSkill", this)
   }
