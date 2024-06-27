@@ -15,6 +15,7 @@ export class SkillPow extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
+    console.log("技能光辉复燃被使用了");
+    this.scene.scene.get("Main").events.emit("skillToRestorePow", this);
   }
 }

@@ -6,12 +6,14 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   hp: number = 5; // 英雄的生命值
   maxHp: number = 5; // 英雄的生命值上限
   level: number = 1;
+  maxLevel:number = 25 //英雄机的最高等级
   exp: number = 0; // 英雄的经验值
   expToNextLevel: number = 0;
   maxPow: number = 10; // 英雄的能量值上限
   pow: number = 0; // 英雄的能量值
   bullets: Physics.Arcade.Group; //英雄的子弹组
   fireFrequency: number = 300; // 子弹的发射频率
+  expRate: number = 1; //英雄的经验获取倍率
   //英雄机移动相关属性
   isDown: boolean = false;
   downX: number;
@@ -117,8 +119,8 @@ export abstract class Hero extends Physics.Arcade.Sprite {
    * @param value 所增长的经验值
    */
   growExp(value: number): void {
-    if (this.level === 25) return;
-    this.exp += value;
+    if (this.level === this.maxLevel) return;
+    this.exp += this.expRate * value;
     const { newLevel, expToNextLevel } = calcLevelAndRemainingExp(this.exp);
     this.expToNextLevel = expToNextLevel;
     if (newLevel > this.level) {
@@ -163,7 +165,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
    */
   reduceHp(value: number): void {
     if (this.hp <= 0) return;
-    this.pow = 0;
+    // this.pow = 0;
     this.hp -= value;
   }
   /**

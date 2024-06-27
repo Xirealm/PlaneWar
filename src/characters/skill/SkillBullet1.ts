@@ -18,7 +18,7 @@ export class SkillBullet1 extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
-    this.scene.events.emit("skillToImproveVelocity", this);
+    console.log("技能急速射击被使用了");
+    this.scene.scene.get("Main").events.emit("skillToImproveVelocity", this);
   }
 }

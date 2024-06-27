@@ -16,7 +16,7 @@ export class SkillActive1 extends Skill {
     this.initBtn(scene)
   }
   useSkill(){
-    console.log("技能被使用了");
+    console.log("主动技能凤翼天斩被使用了");
     this.scene.events.emit("fireBulletFirdBird", this);
   }
 }

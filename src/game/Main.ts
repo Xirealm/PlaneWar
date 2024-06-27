@@ -394,6 +394,21 @@ export class Main extends Scene {
     // 监听英雄升级事件
     this.events.on("getSkill", this.onGetSkill, this);
     this.events.on("fireBulletFirdBird", this.fireBulletFirdBird, this);
+    this.events.on("skillToImproveVelocity", this.skillToImproveVelocity, this);
+    this.events.on(
+      "skillToImproveDemageRate",
+      this.skillToImproveDemageRate,
+      this
+    );
+    this.events.on(
+      "skillToImproveBaseDemage",
+      this.skillToImproveBaseDemage,
+      this
+    );
+    this.events.on("skillToRestoreHp", this.skillToRestoreHp, this);
+    this.events.on("skillToImproveHp", this.skillToImproveHp, this);
+    this.events.on("skillToImproveExpRate", this.skillToImproveExpRate, this);
+    this.events.on("skillToRestorePow", this.skillToRestorePow, this);
     // 子弹A和敌机A碰撞
     this.physics.add.overlap(bulletsA, enemiesA, this.hit, null, this);
     // 子弹A和敌机B碰撞
@@ -510,7 +525,9 @@ export class Main extends Scene {
     if (bullet.bulletType === "baseBullet") {
       bullet.disableBody(true, true); //销毁子弹
     }
-    enemy.takeDamage(bullet.damage); //对敌机减血
+    console.log(bullet.getDemage());
+
+    enemy.takeDamage(bullet.getDemage()); //对敌机减血
     if (enemy.hp <= 0) {
       this.kill(bullet, enemy);
     }
@@ -584,11 +601,10 @@ export class Main extends Scene {
   }
   //获得技能
   onGetSkill(skill: Skill) {
-    //在主场景新建技能
-    skill = SkillFactory.createSkill(this, skill.name);
-    selectedSkillGroup.add(skill);
-    console.log(selectedSkillGroup.getChildren());
     if (skill.type === "active") {
+      //在主场景新建技能
+      skill = SkillFactory.createSkill(this, skill.name);
+      selectedSkillGroup.add(skill);
       const activeSkill = this.add
         .image(35, 50, skill.icon)
         .setOrigin(0.5)
@@ -603,23 +619,52 @@ export class Main extends Scene {
         });
       activeSkillContainer.add(activeSkill);
       return;
+    } else {
+      skill.useSkill();
     }
   }
-  fireBulletFirdBird() {
+  fireBulletFirdBird(skill: Skill) {
+    if (hero.pow < skill.pow) {
+      console.log("能量值不足",skill.pow,"点");
+      return
+    }
+    hero.pow -= skill.pow;
     bulletFireBird.fire(hero.x, hero.y - 32);
   }
   skillToImproveVelocity(skill: Skill) {
     bulletsA.getChildren().forEach((bullet) => {
-      (bullet as Bullet).velocity *= 1 - skill.value;
+      (bullet as Bullet).velocityRate = 1 + skill.value;
+    });
+  }
+  skillToImproveDemageRate(skill: Skill) {
+    bulletsA.getChildren().forEach((bullet) => {
+      console.log("子弹伤害倍率提升");
+      (bullet as Bullet).demageRate = 1 + skill.value;
+    });
+  }
+  skillToImproveBaseDemage(skill: Skill) {
+    bulletsA.getChildren().forEach((bullet) => {
+      console.log("子弹基础伤害提升");
+
+      (bullet as Bullet).baseDemage += skill.value;
     });
   }
   skillToRestoreHp(skill: Skill) {
     console.log("英雄机生命值回满");
     hero.hp = hero.maxHp;
+    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
   }
   skillToImproveHp(skill: Skill) {
     console.log("英雄机最大生命值+1");
     hero.maxHp += 1;
+  }
+  skillToImproveExpRate(skill: Skill) {
+    console.log("英雄机获取经验值倍率增加");
+    hero.expRate += skill.value;
+  }
+  skillToRestorePow(skill: Skill) {
+    console.log("英雄机能量值恢复3点");
+    hero.addPow(skill.value);
   }
   // getSkillContainer() {
   //   this.sys.pause();

@@ -19,7 +19,7 @@ export class SkillHp2 extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
-    this.scene.events.emit("skillToImproveHp", this);
+    console.log("技能生命赞歌被使用了");
+    this.scene.scene.get("Main").events.emit("skillToImproveHp", this);
   }
 }

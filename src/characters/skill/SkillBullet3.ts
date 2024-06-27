@@ -3,7 +3,7 @@ import { Skill } from "./Skill";
 
 export class SkillBullet3 extends Skill {
   type: string = "bullet";
-  name: string = "SkillBullet2";
+  name: string = "SkillBullet3";
   value: number = 10;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
@@ -18,6 +18,7 @@ export class SkillBullet3 extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
+    console.log("技能子弹进化被使用了");
+    this.scene.scene.get("Main").events.emit("skillToImproveBaseDemage", this);
   }
 }

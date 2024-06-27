@@ -15,6 +15,7 @@ export class SkillExp extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
+    console.log("技能智慧之环被使用了");
+    this.scene.scene.get("Main").events.emit("skillToImproveExpRate", this);
   }
 }

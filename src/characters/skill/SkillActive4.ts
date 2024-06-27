@@ -19,7 +19,7 @@ export class SkillActive4 extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
+    console.log("主动技能超级子弹被使用了");
     this.scene.events.emit("fireSuperBullet", this);
   }
 }

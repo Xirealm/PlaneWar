@@ -18,6 +18,8 @@ export class SkillBullet2 extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
+    console.log("技能穿心之箭被使用了");
+    console.log(this);
+    this.scene.scene.get("Main").events.emit("skillToImproveDemageRate", this);
   }
 }

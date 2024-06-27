@@ -74,7 +74,7 @@ export class Login extends Scene {
       .setScale(0.3)
       .setOrigin(0.5)
       .setInteractive()
-        .on("pointerdown", () => {
+      .on("pointerdown", () => {    
           const username = (
             document.getElementById("username") as HTMLInputElement
           ).value;
@@ -88,10 +88,13 @@ export class Login extends Scene {
           //     usernameInput.destroy()
           //     passwordInput.destroy()
           // }
-            this.game.scene.start("Home");
-            //将输入框销毁
-            usernameInput.destroy()
-            passwordInput.destroy()
+          usernameInput.destroy();
+          passwordInput.destroy();
+          this.scene.pause()
+          this.game.scene.start("Home");          
+          //将输入框销毁
+          loginPanel.setActive(false)
+          loginPanel.setVisible(true)
         });
     const loginText = this.add
       .text(loginBtn.x, loginBtn.y -10, "登录", {

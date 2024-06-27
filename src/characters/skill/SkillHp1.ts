@@ -18,7 +18,7 @@ export class SkillHp1 extends Skill {
     this.initBtn(scene);
   }
   useSkill() {
-    console.log("技能被使用了");
-    this.scene.events.emit("skillToRestoreHp", this);
+    console.log("技能圣光庇护被使用了");
+    this.scene.scene.get("Main").events.emit("skillToRestoreHp", this);
   }
 }

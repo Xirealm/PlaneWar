@@ -2,9 +2,11 @@ import { Scene, Physics } from "phaser";
 
 export abstract class Bullet extends Physics.Arcade.Sprite {
   bulletType: string;
-  damage: number; // 子弹造成的伤害
+  baseDemage: number; // 子弹基础伤害
+  demageRate: number = 1; //子弹造成的伤害倍率
   size: number = 0.5; // 子弹初始大小
   velocity: number = 250; // 子弹飞机速度
+  velocityRate: number = 1; // 子弹飞行速度倍率
   constructor(
     scene: Scene,
     x: number,
@@ -26,12 +28,15 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
    */
   fire(x: number, y: number) {
     this.enableBody(true, x, y, true, true);
-    this.setVelocityY(-this.velocity);
+    this.setVelocityY(-this.velocity * this.velocityRate);
     // this.scene.sound.play("bullet");
   }
+  getDemage():number {
+    return this.baseDemage * this.demageRate;
+  }
   upgrade(level: number) {
-    console.log("子弹升级到",level);
-    this.damage = this.damage * 2;
+    console.log("子弹升级到", level);
+    this.baseDemage = this.baseDemage * 2;
   }
   // 每一帧更新回调 销毁子弹，重新置于对象池
   preUpdate(time: number, delta: number) {

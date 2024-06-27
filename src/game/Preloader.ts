@@ -184,6 +184,7 @@ export class Preloader extends Scene {
         // 点击事件：关闭当前场景，打开Main场景
         // 背景音乐
         // this.sound.play("bgm");
+        button.destroy()
         this.game.scene.start("Login");
       })
       .setOrigin(0.5);

@@ -5,6 +5,7 @@ export abstract class Skill extends GameObjects.Container {
   supplyType: string; // 补给类型
   icon?: string;
   value?: number; //技能对应数值
+  pow?: number;//主动技能消耗能量值
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y);
     scene.add.existing(this);

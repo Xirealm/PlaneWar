@@ -64,7 +64,7 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
   takeDamage(damage: number): void {
     this.hp -= damage;
     let demage = this.scene.add.text(this.x, this.y, `${damage}`, {
-      fontSize: "20px",
+      font:"18px bold",
       color:"orange"
     });
     setTimeout(() => {
