@@ -12,37 +12,37 @@ export class Login extends Scene {
       .setAlpha(0.5);
     const loginPanelBg = this.add
       .image(width / 2, height / 2 - 50, "loginPanel", "bg")
-      .setDisplaySize(width * 0.72, height * 0.25);
-    const loginPanel = this.add.container(width / 2, height / 2 - 50);
-    const registerPanel = this.add.container(width / 2, height / 2 - 50);
-    const usernameLabel = this.add.text(-100, -40, "账 号", {
+      .setDisplaySize(width * 0.78, height * 0.3);
+    const loginPanel = this.add.container(width / 2, height / 2 - 60);
+    const registerPanel = this.add.container(width / 2, height / 2 - 60);
+    const accountLabel = this.add.text(-100, -40, "账 号", {
       fontFamily: "Arial",
       fontSize: "16px",
       color: "#ffffff",
     }).setOrigin(0,0.5)
-    const usernameInputBg = this.add
+    const accountInputBg = this.add
       .sprite(
-        usernameLabel.x + usernameLabel.displayWidth + 10,
+        accountLabel.x + accountLabel.displayWidth + 10,
         -40,
         "loginPanel",
         "input"
       )
       .setDisplaySize(150, 30)
       .setOrigin(0, 0.5);
-    const usernameElement = document.createElement("input");
-    usernameElement.setAttribute("id", "username");
-    usernameElement.placeholder = "输入账号名/手机号";
-    const usernameInput = this.add
-      .dom(usernameInputBg.x + 5, usernameInputBg.y, usernameElement, {
+    const accountElement = document.createElement("input");
+    accountElement.setAttribute("id", "account");
+    accountElement.placeholder = "输入账号名/手机号";
+    const accountInput = this.add
+      .dom(accountInputBg.x + 5, accountInputBg.y, accountElement, {
         backgroundColor: "transparent",
         border: "none",
         outline: "none",
-        width: usernameInputBg.displayWidth - 15 + "px",
+        width: accountInputBg.displayWidth - 15 + "px",
       })
       .setOrigin(0, 0.5)
       .setInteractive();
     const passwordLabel = this.add
-      .text(-100, usernameLabel.y + usernameLabel.displayHeight + 15, "密 码", {
+      .text(-100, accountLabel.y + accountLabel.displayHeight + 15, "密 码", {
         fontFamily: "Arial",
         fontSize: "16px",
         color: "#ffffff",
@@ -75,20 +75,20 @@ export class Login extends Scene {
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", () => {    
-          const username = (
-            document.getElementById("username") as HTMLInputElement
+          const account = (
+            document.getElementById("account") as HTMLInputElement
           ).value;
           const password = (
             document.getElementById("password") as HTMLInputElement
           ).value;
-          // if (username === "user" && password === "123") {
+          // if (account === "user" && password === "123") {
           //     // this.sound.play("bgm");
           //     this.game.scene.start("Home");
           //     //将输入框销毁
-          //     usernameInput.destroy()
+          //     accountInput.destroy()
           //     passwordInput.destroy()
           // }
-          usernameInput.destroy();
+          accountInput.destroy();
           passwordInput.destroy();
           this.scene.pause()
           this.game.scene.start("Home");          
@@ -104,8 +104,8 @@ export class Login extends Scene {
       })
       .setOrigin(0.5);
     const switchToRegister = this.add
-      .text(loginBtn.x, loginBtn.y  + 20, "暂未注册，点击注册", {
-        fontSize: "10px",
+      .text(loginBtn.x, loginBtn.y  + 40, "暂未注册，点击注册", {
+        fontSize: "12px",
         color: "#ffffff",
       })
       .setOrigin(0.5)
@@ -115,9 +115,9 @@ export class Login extends Scene {
           registerPanel.setVisible(true);
       });
     loginPanel.add([
-      usernameLabel,
-      usernameInputBg,
-      usernameInput,
+      accountLabel,
+      accountInputBg,
+      accountInput,
       passwordLabel,
       passwordInputBg,
       passwordInput,
@@ -126,13 +126,12 @@ export class Login extends Scene {
       switchToRegister,
     ]);
     loginPanel.setVisible(true);
-    
     const registerTelLabel = this.add
-      .text(-110, -40, "手机号", {fontFamily: "Arial",fontSize: "16px",color: "#ffffff",})
+      .text(-110, -50, "手机号", {fontFamily: "Arial",fontSize: "16px",color: "#ffffff",})
       .setOrigin(0, 0.5);
     const registerTelInputBg = this.add
       .sprite(
-        registerTelLabel.x + registerTelLabel.displayWidth + 10,-40,
+        registerTelLabel.x + registerTelLabel.displayWidth + 10,-50,
         "loginPanel","input"
       )
       .setDisplaySize(150, 30)
@@ -204,8 +203,6 @@ export class Login extends Scene {
           document.getElementById("tel") as HTMLInputElement
         ).value;
         await sendCode(tel)
- 
-      
       });
       const sendCodeText = this.add
         .text(sendCodeBtn.x + 10, sendCodeBtn.y, "获取", {
@@ -214,10 +211,47 @@ export class Login extends Scene {
           color: "#ffffff",
         })
         .setOrigin(0,0.5);
+    const registerUsernameLabel = this.add
+      .text(
+        -110,
+        registerCodeLabel.y + registerCodeLabel.displayHeight + 15,
+        "用户名",
+        {
+          fontFamily: "Arial",
+          fontSize: "16px",
+          color: "#ffffff",
+        }
+      )
+      .setOrigin(0, 0.5);
+    const registerUsernameInputBg = this.add
+      .image(
+        registerUsernameLabel.x + registerUsernameLabel.displayWidth + 10,
+        registerUsernameLabel.y,
+        "loginPanel",
+        "input"
+      )
+      .setDisplaySize(150, 30)
+      .setOrigin(0, 0.5);
+      const registerUsernameElement = document.createElement("input");
+      registerUsernameElement.setAttribute("id", "registerPwd");
+      registerUsernameElement.placeholder = "输入用户名";
+      const registerUsernameInput = this.add
+        .dom(
+          registerUsernameInputBg.x + 5,
+          registerUsernameInputBg.y,
+          registerUsernameElement,
+          {
+            backgroundColor: "transparent",
+            border: "none",
+            outline: "none",
+            width: registerUsernameInputBg.displayWidth - 15 + "px",
+          }
+        )
+        .setOrigin(0, 0.5);
     const registerPasswordLabel = this.add
       .text(
         -100,
-        registerCodeLabel.y + registerCodeLabel.displayHeight + 15,
+        registerUsernameLabel.y + registerUsernameLabel.displayHeight + 15,
         "密 码",
         {
           fontFamily: "Arial",
@@ -226,6 +260,7 @@ export class Login extends Scene {
         }
       )
       .setOrigin(0, 0.5);
+
     const registerPasswordInputBg = this.add
       .image(
         registerPasswordLabel.x + registerPasswordLabel.displayWidth + 10,
@@ -236,7 +271,7 @@ export class Login extends Scene {
       .setDisplaySize(150, 30)
       .setOrigin(0, 0.5);
     const registerPasswordElement = document.createElement("input");
-    registerPasswordElement.setAttribute("id", "registerPwd");
+    registerPasswordElement.setAttribute("id", "registerUsername");
     registerPasswordElement.placeholder = "输入密码";
     const registerPasswordInput = this.add
       .dom(
@@ -252,21 +287,21 @@ export class Login extends Scene {
       )
       .setOrigin(0, 0.5);
     const registerBtn = this.add
-        .image(0, 60, "btnYellow")
+        .image(0, 85, "btnYellow")
         .setScale(0.5)
         .setOrigin(0.5)
         .setInteractive()
         .on("pointerdown", () => {
             const tel = (document.getElementById("tel") as HTMLInputElement).value;
             const code = (document.getElementById("code") as HTMLInputElement).value;
+            const username = (document.getElementById("registerUsername") as HTMLInputElement).value;
             const password = (document.getElementById("registerPwd") as HTMLInputElement).value
             console.log(tel,code,password);
-            
-            // if (username === "user" && password === "123") {
+            // if (account === "user" && password === "123") {
             //     // this.sound.play("bgm");
             //     this.game.scene.start("Home");
             //     //将输入框销毁
-            //     usernameInput.destroy()
+            //     accountInput.destroy()
             //     passwordInput.destroy()
             // }
         });
@@ -286,6 +321,9 @@ export class Login extends Scene {
       registerCodeInput,
       sendCodeBtn,
       sendCodeText,
+      registerUsernameLabel,
+      registerUsernameInputBg,
+      registerUsernameInput,
       registerPasswordLabel,
       registerPasswordInputBg,
       registerPasswordInput,

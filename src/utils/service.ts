@@ -6,6 +6,7 @@ export const sendCode = async (tel: string) => {
         phone:tel
     })
 }
+// export const register = async ()
 export const login = () => {
     
 }
