@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-
+import { sendCode } from "../utils/service"
 export class Login extends Scene {
   constructor() {
     super("Login");
@@ -197,7 +197,16 @@ export class Login extends Scene {
         "btnBlue"
       )
       .setOrigin(0, 0.5)
-      .setScale(0.3 , 0.5);
+      .setScale(0.3, 0.5)
+      .setInteractive()
+      .on("pointerdown", async () => {
+        const tel = (
+          document.getElementById("tel") as HTMLInputElement
+        ).value;
+        await sendCode(tel)
+ 
+      
+      });
       const sendCodeText = this.add
         .text(sendCodeBtn.x + 10, sendCodeBtn.y, "获取", {
           fontFamily: "Arial",

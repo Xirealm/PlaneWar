@@ -13,7 +13,7 @@ export class SkillBullet2 extends Skill {
       .sprite(0, 0, "cardBullet2")
       .setScale(0.4)
       .setDepth(0.5);
-    const text = scene.add.text(-25, -10, `${this.value * 100}`);
+    const text = scene.add.text(-20, -8, `${this.value * 100}`);
     this.add([card, text]);
     this.initBtn(scene);
   }

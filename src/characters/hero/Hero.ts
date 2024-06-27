@@ -127,9 +127,12 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       //英雄升级
       this.upgrade(newLevel);
       //子弹升级
-      this.bullets.getChildren().forEach((bullet) => {
-        (bullet as Bullet).upgrade(newLevel);
-      });
+      if (this.level % 5 === 1) {
+        //每一次阶段升级 子弹升级
+        this.bullets.getChildren().forEach((bullet) => {
+          (bullet as Bullet).upgrade(newLevel);
+        });
+      }
       // console.log("距离升到",newLevel + 1,"级还差",expToNextLevel,"经验值");
     }
   }

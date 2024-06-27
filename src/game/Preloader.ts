@@ -2,6 +2,9 @@ import { Scene } from "phaser";
 import backgroundImg from "../assets/image/bg/mainBg.jpg";
 import homeBackgroundImg from "../assets/image/interface/homeBg.jpg";
 import gameBackgroundImg1 from "../assets/image/bg/bg.jpg";
+import gameBackgroundImg2 from "../assets/image/bg/bg0.jpg";
+import gameBackgroundImg3 from "../assets/image/bg/bg1.jpg";
+import gameBackgroundImg4 from "../assets/image/bg/bg2.jpg";
 import titleImg from "../assets/image/interface/title.png";
 import beginBtnImg from "../assets/image/interface/beginBtn.png";
 import loginPanelImg from "../assets/image/interface/login_panel.png";
@@ -57,6 +60,11 @@ import progressBarContentYellowImg from "../assets/image/interface/progress_bar_
 import progressBarBgBlueImg from "../assets/image/interface/progress_bar_bg_blue.png"
 import progressBarContentBlueImg from "../assets/image/interface/progress_bar_content_blue.png"
 
+import bgPlace1Img from "../assets/image/interface/bg_place1.png"
+import bgPlace2Img from "../assets/image/interface/bg_place2.png"
+import bgPlace3Img from "../assets/image/interface/bg_place3.png"
+import bgPlace4Img from "../assets/image/interface/bg_place4.png"
+
 import chooseBtnImg from "../assets/image/skill/btn_choose.png"
 import cardfireBirdImg from "../assets/image/skill/card_firebird.png";
 import iconfireBirdImg from "../assets/image/skill/icon_firebird.png";
@@ -73,7 +81,6 @@ import cardExpImg from "../assets/image/skill/card_exp.png";
 import cardBullet1Img from "../assets/image/skill/card_bullet1.png";
 import cardBullet2Img from "../assets/image/skill/card_bullet2.png";
 import cardBullet3Img from "../assets/image/skill/card_bullet3.png";
-
 
 import bgmAudio from "../assets/audio/game_music.ogg";
 import boomAudio from "../assets/audio/use_bomb.wav";
@@ -92,6 +99,9 @@ export class Preloader extends Scene {
     //加载图片资源
     this.load.image("background", backgroundImg);
     this.load.image("gameBackground1", gameBackgroundImg1);
+    this.load.image("gameBackground2", gameBackgroundImg2);
+    this.load.image("gameBackground3", gameBackgroundImg3);
+    this.load.image("gameBackground4", gameBackgroundImg4);
     this.load.image("title", titleImg);
     this.load.image("beginBtn", beginBtnImg);
     this.load.image("enemyA", enemyAImg);
@@ -134,6 +144,10 @@ export class Preloader extends Scene {
     this.load.image("chooseHeroBg", chooseHeroBgImg);
     this.load.image("btnPre", btnPreImg);
     this.load.image("btnNext", btnNextImg);
+    this.load.image("bgPlace1",bgPlace1Img)
+    this.load.image("bgPlace2",bgPlace2Img)
+    this.load.image("bgPlace3",bgPlace3Img)
+    this.load.image("bgPlace4",bgPlace4Img)
     // 加载技能卡片资源
     this.load.image("chooseBtn", chooseBtnImg);
     this.load.image("cardFirebird", cardfireBirdImg);

@@ -64,9 +64,10 @@ export class Main extends Scene {
     const { width, height } = this.cameras.main;
     this.width = width;
     this.height = height;
+    const backgroundKey = this.registry.get("gameBackground")
     // 背景
     background = this.add
-      .tileSprite(0, 0, width, height, "gameBackground1")
+      .tileSprite(0, 0, width, height, backgroundKey)
       .setOrigin(0);
     // 暂停按钮
     const pauseBtn = this.add
@@ -624,11 +625,11 @@ export class Main extends Scene {
     }
   }
   fireBulletFirdBird(skill: Skill) {
-    if (hero.pow < skill.pow) {
-      console.log("能量值不足",skill.pow,"点");
-      return
-    }
-    hero.pow -= skill.pow;
+    // if (hero.pow < skill.pow) {
+    //   console.log("能量值不足",skill.pow,"点");
+    //   return
+    // }
+    // hero.pow -= skill.pow;
     bulletFireBird.fire(hero.x, hero.y - 32);
   }
   skillToImproveVelocity(skill: Skill) {
