@@ -170,7 +170,6 @@ export class Home extends Scene {
       .setVisible(false)
       .setInteractive()
       .on("pointerdown", () => {
-        this.registry.set("place", "place4");
         this.scene.start("Main");
       });
     const beginBtn = this.add

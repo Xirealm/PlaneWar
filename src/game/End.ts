@@ -17,7 +17,7 @@ export class End extends Scene {
     // 当前得分
     let score = this.registry.get("score");
     this.add
-      .text(width / 2, height / 2 - 10, `当前得分：${score}`, {
+      .text(width / 2, height / 2 - 10, `得分：${score}`, {
         fontFamily: "Arial",
         fontSize: 20,
       })
@@ -34,6 +34,19 @@ export class End extends Scene {
       .on("pointerdown", () => {
         // 点击事件：关闭当前场景，打开Main场景
         this.scene.start("Main");
+      });
+    
+   this.add
+      .text(width / 2, height / 2 + 100, "回到首页", {
+        fontFamily: "Arial",
+        fontSize: 20,
+      })
+      .setOrigin(0.5)
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.scene.stop();
+        this.scene.stop("Main");
+        this.scene.start("Home");
       });
   }
 }

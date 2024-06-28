@@ -12,7 +12,7 @@ export class Pause extends Scene {
       .setAlpha(0.5);;
     // 当前得分
     this.add
-      .text(width / 2, height / 2 - 10, "继续游戏", {
+      .text(width / 2, height / 2 - 50, "继续游戏", {
         fontFamily: "Arial",
         fontSize: 20,
       })
@@ -25,7 +25,7 @@ export class Pause extends Scene {
 
     // 重新开始按钮
     let button = this.add
-      .text(width / 2, height / 2 + 50, "重新开始", {
+      .text(width / 2, height / 2 , "重新开始", {
         fontFamily: "Arial",
         fontSize: 20,
       })
@@ -34,6 +34,18 @@ export class Pause extends Scene {
       .on("pointerdown", () => {
         // 点击事件：关闭当前场景，打开Main场景
         this.scene.start("Main");
+      });
+    this.add
+      .text(width / 2, height / 2 + 50, "回到首页", {
+        fontFamily: "Arial",
+        fontSize: 20,
+      })
+      .setOrigin(0.5)
+      .setInteractive()
+      .on("pointerdown", () => {
+         this.scene.stop();
+         this.scene.stop("Main");
+         this.scene.start("Home");
       });
   }
 }

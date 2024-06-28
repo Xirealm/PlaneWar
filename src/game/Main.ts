@@ -687,11 +687,11 @@ export class Main extends Scene {
     bulletFireBird.fire(this.hero.x, this.hero.y - 32);
   }
   fireBomb(skill: Skill) {
-    // if (hero.pow < skill.pow) {
-    //   console.log("能量值不足",skill.pow,"点");
-    //   return
-    // }
-    // hero.pow -= skill.pow;
+    if (this.hero.pow < skill.pow) {
+      console.log("能量值不足",skill.pow,"点");
+      return
+    }
+    this.hero.pow -= skill.pow;
     enemiesA.getChildren().forEach((enemy) => {
       if (enemy.active) {
         bulletsBomb.getFirstDead().fire((enemy as Enemy).x, (enemy as Enemy).y);
