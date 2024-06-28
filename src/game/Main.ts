@@ -52,11 +52,7 @@ let powRatio: GameObjects.Image;
 let expRatio: GameObjects.Image;
 let levelText: GameObjects.Text;
 let scoreGroup: GameObjects.Group;
-let chooseSkillScene: Scene;
-let skillContainer: GameObjects.Container; //技能选择容器
 let activeSkillContainer: GameObjects.Container; //主动技能容器
-let skillGroup: GameObjects.Group; //技能组
-let selectedSkillGroup: GameObjects.Group; //已选择的技能组
 // 场景数据
 let score: number;
 
@@ -306,7 +302,6 @@ export class Main extends Scene {
       .setAlpha(0.8)
       .setOrigin(0);
     expRatio.displayWidth = this.hero.getExpRatio() * expRatio.width;
-    selectedSkillGroup = this.add.group();
     // 主动技能按钮容器
     activeSkillContainer = this.add.container(0, 500);
     // 调用注册事件
@@ -360,7 +355,7 @@ export class Main extends Scene {
     });
     //掉落能量补给
     this.time.addEvent({
-      delay: Phaser.Math.Between(5000, 10000), // 定时器 每5-10秒掉落1个生命补给
+      delay: Phaser.Math.Between(3000, 5000), // 定时器 每5-10秒掉落1个生命补给
       callback: () => {
         this.spawnSupply("supplyPow");
       },
@@ -484,16 +479,10 @@ export class Main extends Scene {
       supply.born();
     }
   }
-  onHeroUpgrade(hero) {
-    console.log("英雄升级！！！！！！！！！", hero);
+  onHeroUpgrade(hero:Hero) {
+    console.log("英雄升级！！！！！！！！！");
     levelText.setText(`${hero.level}`);
     // 处理英雄升级后的逻辑
-    this.scene.pause();
-    if (hero.level == 2) {
-      this.game.scene.start("ChooseSkill");
-    } else {
-      this.game.scene.wake("ChooseSkill");
-    }
     //所有敌机升级
     enemiesA.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
@@ -507,7 +496,6 @@ export class Main extends Scene {
     enemiesBoss.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
     });
-    // bulletFireBird.fire(hero.x, hero.y - 32);
     for (let i = 0; i < 3; i++) {
       this.spawnEnemy("enemyA");
     }
@@ -517,8 +505,14 @@ export class Main extends Scene {
     for (let i = 0; i < 2; i++) {
       this.spawnEnemy("enemyFast");
     }
-    if (hero.level) {
-      this.spawnEnemy("enemyBoss");
+    this.spawnEnemy("enemyBoss");
+    if (hero.level == 2) {
+      this.scene.pause();
+      this.game.scene.start("ChooseSkill");
+    }
+    else if (hero.level % 5 !== 1) {
+      this.scene.pause();
+      this.scene.wake("ChooseSkill");
     }
     // 例如，更新UI、播放音效、增加分数等
   }
@@ -539,7 +533,7 @@ export class Main extends Scene {
     booms.getFirstDead()?.show(enemy.x, enemy.y); //爆炸
     // 分数更新
     score += enemy.score;
-    this.hero.growExp(enemy.exp);
+    this.hero.growExp(enemy.exp * this.hero.expRate);
   }
   updateDisplayScore() {
     // 清除原有的数字
@@ -603,9 +597,8 @@ export class Main extends Scene {
   //获得技能
   onGetSkill(skill: Skill) {
     if (skill.type === "active") {
-      //在主场景新建技能
+      //在主场景新建技能    
       skill = SkillFactory.createSkill(this, skill.name);
-      selectedSkillGroup.add(skill);
       const activeSkill = this.add
         .image(35, 50 * activeSkillContainer.length, skill.icon)
         .setOrigin(0.5)
@@ -613,9 +606,6 @@ export class Main extends Scene {
         .setInteractive()
         .setDisplaySize(40, 40)
         .on("pointerdown", () => {
-          // const skill = selectedSkillGroup.getMatching("type", "active")[
-          //   activeSkillContainer.length - 1
-          // ];
           skill.useSkill();
         });
       activeSkillContainer.add(activeSkill);
@@ -658,20 +648,8 @@ export class Main extends Scene {
         //注册子弹Super和敌机碰撞
         this.physics.add.overlap(bulletsSuper, enemiesA, this.hit, null, this);
         this.physics.add.overlap(bulletsSuper, enemiesB, this.hit, null, this);
-        this.physics.add.overlap(
-          bulletLaser,
-          enemiesFast,
-          this.hit,
-          null,
-          this
-        );
-        this.physics.add.overlap(
-          bulletLaser,
-          enemiesBoss,
-          this.hit,
-          null,
-          this
-        );
+        this.physics.add.overlap(bulletsSuper, enemiesFast, this.hit, null, this);
+        this.physics.add.overlap(bulletsSuper, enemiesBoss, this.hit, null, this);
       }
       return;
     } else {
@@ -736,19 +714,18 @@ export class Main extends Scene {
     bullets.getChildren().forEach((bullet) => {
       //子弹速度提高
       (bullet as Bullet).velocityRate = 1 + skill.value;
-      this.hero.fireFrequency =
-        this.hero.fireFrequency - (this.hero.fireFrequency / 2) * skill.value;
     });
+    this.hero.fireFrequency = this.hero.fireFrequency - (this.hero.fireFrequency / 2) * skill.value;
   }
   skillToImproveDemageRate(skill: Skill) {
+    console.log("子弹伤害倍率提升");
     bullets.getChildren().forEach((bullet) => {
-      console.log("子弹伤害倍率提升");
       (bullet as Bullet).demageRate += skill.value;
     });
   }
   skillToImproveBaseDemage(skill: Skill) {
+    console.log("子弹基础伤害提升");
     bullets.getChildren().forEach((bullet) => {
-      console.log("子弹基础伤害提升");
       (bullet as Bullet).baseDemage += skill.value;
     });
   }
@@ -768,6 +745,7 @@ export class Main extends Scene {
   skillToRestorePow(skill: Skill) {
     console.log("英雄机能量值恢复3点");
     this.hero.addPow(skill.value);
+    powRatio.displayWidth = this.hero.getPowRatio() * powRatio.width;
   }
   // 每一帧的回调
   update() {

@@ -35,7 +35,6 @@ export abstract class Bullet extends Physics.Arcade.Sprite {
     return Math.ceil(this.baseDemage * this.demageRate);
   }
   upgrade(level: number) {
-    console.log("子弹升级到",level,"阶段");
     this.baseDemage += 10;
     this.velocity += 20;
   }

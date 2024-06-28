@@ -146,8 +146,6 @@ export abstract class Hero extends Physics.Arcade.Sprite {
    */
   upgrade(level: number): void {
     this.level = level;
-    // 抛出升级事件
-    this.scene.events.emit("heroUpgrade", this);
     if (this.level % 5 === 1) {
       this.fireFrequency -= 20;
       // 移除现有的定时器
@@ -157,6 +155,8 @@ export abstract class Hero extends Physics.Arcade.Sprite {
       // 重新设置发射事件
       this.initFireEvent();
     }
+    // 抛出升级事件
+    this.scene.events.emit("heroUpgrade",this); 
   }
   /**
    * 补给生命方法

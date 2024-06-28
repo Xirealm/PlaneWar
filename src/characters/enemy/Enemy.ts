@@ -34,8 +34,7 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
   }
   upgrade(level: number) {
     this.maxHp = this.maxHp * 1.2;
-    this.exp = this.exp *= 1.2;
-    this.score = this.score * 2;
+    this.exp = this.exp *= 1.5;
   }
   born() {
     let x = Math.Between(this.width - 10, 345);

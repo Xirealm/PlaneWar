@@ -30,11 +30,10 @@ export abstract class Skill extends GameObjects.Container {
     this.setActive(true);
   }
   getSkill() {
-    this.scene.scene.resume("Main");
-    this.scene.scene.sleep("ChooseSkill");
+    this.scene.events.emit("getSkill", this);
+    // this.scene.scene.sleep("ChooseSkill");
     console.log("获得技能");
-    this.scene.scene.get("Main").events.emit("getSkill", this)
-    this.scene.events.emit("getSkill", this)
+    // this.scene.scene.get("Main").events.emit("getSkill", this)
   }
   abstract useSkill(): void;
 }

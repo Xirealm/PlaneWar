@@ -49,6 +49,7 @@ export class ChooseSkill extends Scene {
 
   // }
   getSkillContainer() {
+    console.log("随机抽卡");
     let allElements = skillGroup.getChildren();
     // console.log("技能库技能数：",allElements.length);
     let selectedElements = [];
@@ -68,6 +69,7 @@ export class ChooseSkill extends Scene {
   }
   //获得技能
   onGetSkill(skill: Skill) {
+    this.scene.sleep()
     //找了很久才找到的bug
     skillContainer.getAll().forEach((skill) => {
       (skill as GameObjects.Container).setActive(false);
@@ -81,5 +83,8 @@ export class ChooseSkill extends Scene {
     if (skill.level === 5) {
       skillGroup.remove(skill);
     }
+    this.scene.resume("Main");
+    console.log("回到主场景");
+    this.scene.get("Main").events.emit("getSkill", skill);
   }
 }

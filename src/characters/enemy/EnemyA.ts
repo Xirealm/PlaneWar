@@ -5,7 +5,7 @@ export class EnemyA extends Enemy {
   hp: number = 20; // 敌机A的生命值
   maxHp: number = 20; //敌机最大生命值
   score: number = 1; //敌机A的分数
-  exp: number = 1;
+  exp: number = 2;
   constructor(scene: Scene, x: number, y: number) {
     super(scene, x, y, "enemyA");
   }

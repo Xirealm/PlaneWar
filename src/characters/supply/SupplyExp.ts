@@ -1,5 +1,6 @@
 import { Scene, Math } from "phaser";
 import { Supply } from "./Supply";
+import { Main } from "../../game/Main"
 
 export class SupplyExp extends Supply {
   supplyType: string = "Exp";
@@ -15,7 +16,8 @@ export class SupplyExp extends Supply {
     this.setVelocityY(200);
   }
   takeSupply(): number {
+    const hero = (this.scene as Main).hero;
     this.disableBody(true, true);
-    return this.expValue
+    return this.expValue * hero.level
   }
 }
