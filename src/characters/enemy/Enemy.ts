@@ -37,16 +37,6 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
     this.score = this.score * 2;
     this.exp = this.exp * 2;
   }
-  preUpdate(time: number, delta: number) {
-    super.preUpdate(time, delta);
-    let { height } = this.scene.cameras.main;
-    // 敌军走到头，销毁
-    if (this.y >= height + 20) {
-      this.disableBody(true, true);
-    }
-    this.hpBar.setPosition(this.x - 50 / 2, this.y + this.height / 3);
-    this.hpBarFill.width = 50 * (this.hp / this.maxHp);
-  }
   born() {
     let x = Math.Between(this.width - 10, 345);
     let y = Math.Between(-this.height, -this.height * 10);
@@ -63,11 +53,21 @@ export abstract class Enemy extends Physics.Arcade.Sprite {
   takeDamage(damage: number): void {
     this.hp -= damage;
     let demage = this.scene.add.text(this.x, this.y, `${damage}`, {
-      font:"18px bold",
-      color:"orange"
+      font: "18px bold",
+      color: "orange",
     });
     setTimeout(() => {
       demage.destroy();
     }, 500);
+  }
+  preUpdate(time: number, delta: number) {
+    super.preUpdate(time, delta);
+    let { height } = this.scene.cameras.main;
+    // 敌军走到头，销毁
+    if (this.y >= height + 20) {
+      this.disableBody(true, true);
+    }
+    this.hpBar.setPosition(this.x - 50 / 2, this.y + this.height / 3);
+    this.hpBarFill.width = 50 * (this.hp / this.maxHp);
   }
 }

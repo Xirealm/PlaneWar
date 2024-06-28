@@ -194,8 +194,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   getExpRatio(): number {
     const { expToNextLevel } = calcLevelAndRemainingExp(this.exp);
     return (
-      (expRequiredToLevel(this.level + 1) - expToNextLevel) /
-      expRequiredToLevel(this.level + 1)
+      (expRequiredToLevel(this.level + 1) - expToNextLevel) / expRequiredToLevel(this.level + 1)
     );
   }
 }

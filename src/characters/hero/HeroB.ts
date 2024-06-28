@@ -6,7 +6,6 @@ export class HeroB extends Hero {
   constructor(scene: Scene) {
     super(scene, "heroB");
     console.log(`英雄B登场,等级为: ${this.level}`);
-    // this.setCollideWorldBounds(true);
   }
   upgrade(level: number): void {
     super.upgrade(level);
