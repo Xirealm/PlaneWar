@@ -13,8 +13,10 @@ import { EnemyBoss } from "../characters/enemy/EnemyBoss"
 import { BulletFactory } from "../characters/bullet/BulletFactory";
 import { Bullet } from "../characters/bullet/Bullet"
 import { BulletA } from "../characters/bullet/BulletA";
+import { BulletSuper } from "../characters/bullet/BulletSuper";
 import { BulletBomb } from "../characters/bullet/BulletBomb";
 import { BulletFireBird } from "../characters/bullet/BulletFireBird";
+import { BulletLaser } from "../characters/bullet/BulletLaser";
 
 import { SupplyFactory } from "../characters/supply/SupplyFactory";
 import { Supply } from "../characters/supply/Supply"
@@ -29,15 +31,17 @@ import { SkillActive1 } from "../characters/skill/SkillActive1";
 import { Boom } from "../characters/boom/Boom";
 
 // 场景元素
-let hero: Hero;
+// let hero: Hero;
 let background: GameObjects.TileSprite;
 let enemiesA: Physics.Arcade.Group;
 let enemiesB: Physics.Arcade.Group;
 let enemiesFast: Physics.Arcade.Group;
 let enemiesBoss: Physics.Arcade.Group;
-let bulletsA: Physics.Arcade.Group;
+let bullets: Physics.Arcade.Group;
+let bulletsSuper: Physics.Arcade.Group;
 let bulletsBomb: Physics.Arcade.Group;
 let bulletFireBird: BulletFireBird;
+let bulletLaser: BulletLaser;
 let suppliesExp: Physics.Arcade.Group;
 let suppliesHp: Physics.Arcade.Group;
 let suppliesPow: Physics.Arcade.Group;
@@ -59,6 +63,7 @@ let score: number;
 export class Main extends Scene {
   width: number;
   height: number;
+  hero: Hero;
   constructor() {
     super("Main");
   }
@@ -83,24 +88,35 @@ export class Main extends Scene {
       });
     // 为玩家装配英雄机
     if (this.registry.get("hero") === "heroA") {
-      hero = HeroFactory.createHero(this, "TypeA");
+      this.hero = HeroFactory.createHero(this, "TypeA");
     } else if (this.registry.get("hero") === "heroB") {
-      hero = HeroFactory.createHero(this, "TypeB");
+      this.hero = HeroFactory.createHero(this, "TypeB");
     }
     // 子弹
     // 定义子弹A对象池
-    bulletsA = this.physics.add.group({
-      classType: BulletA,
+    bullets = this.physics.add.group({
+      classType: Bullet,
       maxSize: 500, // 子弹A对象池的最大数量
       enable: false,
       immovable: false,
     });
     // 初始化子弹A对象池
     for (let i = 0; i < 500; i++) {
-      let bullet = BulletFactory.createBullet(this, "BulletA");
+      let bullet:Bullet;
+      if (this.hero.heroType === "heroA") {
+        bullet = BulletFactory.createBullet(this, "BulletA");
+      } else if (this.hero.heroType === "heroB") {
+        bullet = BulletFactory.createBullet(this, "BulletB");
+      }
       bullet.disableBody(true, true);
-      bulletsA.add(bullet);
+      bullets.add(bullet);
     }
+    bulletsSuper = this.physics.add.group({
+      classType: BulletSuper,
+      maxSize: 500, // 子弹Super对象池的最大数量
+      enable: false,
+      immovable: false,
+    });
     // 定义子弹炸弹对象池
     bulletsBomb = this.physics.add.group({
       classType: BulletBomb,
@@ -210,7 +226,7 @@ export class Main extends Scene {
       visible: false,
     });
     // 为英雄机设置子弹
-    hero.setBullets(bulletsA);
+    this.hero.setBullets(bullets);
     //初始化分数;
     score = 0;
     scoreGroup = this.add.group(); // 创建一个Group来存放所有得分数字
@@ -237,7 +253,7 @@ export class Main extends Scene {
       .setDisplaySize(98, 8)
       .setAlpha(0.8)
       .setOrigin(0, 0);
-    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
+    hpRatio.displayWidth = this.hero.getHpRatio() * hpRatio.width;
     // 能量进度条
     const powLabel = this.add
       .image(0, 30, "powLabel")
@@ -264,7 +280,7 @@ export class Main extends Scene {
       .setDisplaySize(98, 8)
       .setAlpha(0.8)
       .setOrigin(0);
-    powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
+    powRatio.displayWidth = this.hero.getPowRatio() * powRatio.width;
     // 经验进度条
     levelText = this.add
       .text(width / 2, 85, "1", {
@@ -289,7 +305,7 @@ export class Main extends Scene {
       .setDisplaySize(0, 8)
       .setAlpha(0.8)
       .setOrigin(0);
-    expRatio.displayWidth = hero.getExpRatio() * expRatio.width;
+    expRatio.displayWidth = this.hero.getExpRatio() * expRatio.width;
     selectedSkillGroup = this.add.group();
     // 主动技能按钮容器
     activeSkillContainer = this.add.container(0, 500);
@@ -355,7 +371,11 @@ export class Main extends Scene {
     this.events.on("heroUpgrade", this.onHeroUpgrade, this);
     // 监听英雄升级事件
     this.events.on("getSkill", this.onGetSkill, this);
+    // 监听英雄主动技能释放
     this.events.on("fireBulletFirdBird", this.fireBulletFirdBird, this);
+    this.events.on("fireBomb", this.fireBomb, this);
+    this.events.on("fireLaser", this.fireLaser, this);
+    this.events.on("changeToSuperBullet", this.changeToSuperBullet, this);
     this.events.on("skillToImproveVelocity", this.skillToImproveVelocity, this);
     this.events.on(
       "skillToImproveDemageRate",
@@ -371,33 +391,51 @@ export class Main extends Scene {
     this.events.on("skillToImproveHp", this.skillToImproveHp, this);
     this.events.on("skillToImproveExpRate", this.skillToImproveExpRate, this);
     this.events.on("skillToRestorePow", this.skillToRestorePow, this);
-    // 子弹A和敌机A碰撞
-    this.physics.add.overlap(bulletsA, enemiesA, this.hit, null, this);
-    // 子弹A和敌机B碰撞
-    this.physics.add.overlap(bulletsA, enemiesB, this.hit, null, this);
-    // 子弹A和敌机Fast碰撞
-    this.physics.add.overlap(bulletsA, enemiesFast, this.hit, null, this);
-    // 子弹A和敌机Boss碰撞
-    this.physics.add.overlap(bulletsA, enemiesBoss, this.hit, null, this);
+    this.physics.add.overlap(bullets, enemiesA, this.hit, null, this);
+    this.physics.add.overlap(bullets, enemiesB, this.hit, null, this);
+    this.physics.add.overlap(bullets, enemiesFast, this.hit, null, this);
+    this.physics.add.overlap(bullets, enemiesBoss, this.hit, null, this);
     // 子弹火鸟和敌机碰撞
     this.physics.add.overlap(bulletFireBird, enemiesA, this.hit, null, this);
     this.physics.add.overlap(bulletFireBird, enemiesB, this.hit, null, this);
     this.physics.add.overlap(bulletFireBird, enemiesFast, this.hit, null, this);
     this.physics.add.overlap(bulletFireBird, enemiesBoss, this.hit, null, this);
+    // 子弹爆炸和敌机碰撞
+    this.physics.add.overlap(bulletsBomb, enemiesA, this.hit, null, this);
+    this.physics.add.overlap(bulletsBomb, enemiesB, this.hit, null, this);
+    this.physics.add.overlap(bulletsBomb, enemiesFast, this.hit, null, this);
+    this.physics.add.overlap(bulletsBomb, enemiesBoss, this.hit, null, this);
+    // // 子弹激光和敌机碰撞
+    // this.physics.add.overlap(bulletLaser, enemiesA, this.hit, null, this);
+    // this.physics.add.overlap(bulletLaser, enemiesB, this.hit, null, this);
+    // this.physics.add.overlap(bulletLaser, enemiesFast, this.hit, null, this);
+    // this.physics.add.overlap(bulletLaser, enemiesBoss, this.hit, null, this);
     // 玩家和敌机A碰撞
-    this.physics.add.overlap(hero, enemiesA, this.injured, null, this);
+    this.physics.add.overlap(this.hero, enemiesA, this.injured, null, this);
     // 玩家和敌机B碰撞
-    this.physics.add.overlap(hero, enemiesB, this.injured, null, this);
+    this.physics.add.overlap(this.hero, enemiesB, this.injured, null, this);
     // 玩家和敌机Fast碰撞
-    this.physics.add.overlap(hero, enemiesFast, this.injured, null, this);
+    this.physics.add.overlap(this.hero, enemiesFast, this.injured, null, this);
     // 玩家和敌机Boss碰撞
-    this.physics.add.overlap(hero, enemiesBoss, this.injured, null, this);
+    this.physics.add.overlap(this.hero, enemiesBoss, this.injured, null, this);
     // 玩家拾取经验补给（碰撞）
-    this.physics.add.overlap(hero, suppliesExp, this.getSupply, null, this);
+    this.physics.add.overlap(
+      this.hero,
+      suppliesExp,
+      this.getSupply,
+      null,
+      this
+    );
     // 玩家拾取生命补给（碰撞）
-    this.physics.add.overlap(hero, suppliesHp, this.getSupply, null, this);
+    this.physics.add.overlap(this.hero, suppliesHp, this.getSupply, null, this);
     // 玩家拾取能量补给（碰撞）
-    this.physics.add.overlap(hero, suppliesPow, this.getSupply, null, this);
+    this.physics.add.overlap(
+      this.hero,
+      suppliesPow,
+      this.getSupply,
+      null,
+      this
+    );
   }
   spawnEnemy(type: string) {
     let enemy: Enemy;
@@ -501,7 +539,7 @@ export class Main extends Scene {
     booms.getFirstDead()?.show(enemy.x, enemy.y); //爆炸
     // 分数更新
     score += enemy.score;
-    hero.growExp(enemy.exp);
+    this.hero.growExp(enemy.exp);
   }
   updateDisplayScore() {
     // 清除原有的数字
@@ -575,12 +613,66 @@ export class Main extends Scene {
         .setInteractive()
         .setDisplaySize(40, 40)
         .on("pointerdown", () => {
-          const skill = selectedSkillGroup.getMatching("type", "active")[
-            activeSkillContainer.length - 1
-          ];
+          // const skill = selectedSkillGroup.getMatching("type", "active")[
+          //   activeSkillContainer.length - 1
+          // ];
           skill.useSkill();
         });
       activeSkillContainer.add(activeSkill);
+      if (skill.name === "SkillActive2") {
+        // 初始化子弹炸弹对象池
+        for (let i = 0; i < 100; i++) {
+          let bullet = BulletFactory.createBullet(this, "BulletBomb");
+          bullet.disableBody(true, true);
+          bulletsBomb.add(bullet);
+        }
+      }
+      if (skill.name === "SkillActive3") {
+        bulletLaser = BulletFactory.createBullet(this, "BulletLaser");
+        bulletLaser.disableBody(true, true);
+        //注册子弹激光和敌机碰撞
+        this.physics.add.overlap(bulletLaser, enemiesA, this.hit, null, this);
+        this.physics.add.overlap(bulletLaser, enemiesB, this.hit, null, this);
+        this.physics.add.overlap(
+          bulletLaser,
+          enemiesFast,
+          this.hit,
+          null,
+          this
+        );
+        this.physics.add.overlap(
+          bulletLaser,
+          enemiesBoss,
+          this.hit,
+          null,
+          this
+        );
+      }
+      if (skill.name === "SkillActive4") {   
+        // 初始化子弹Super对象池
+        for (let i = 0; i < bulletsSuper.maxSize; i++) {
+          let bullet = BulletFactory.createBullet(this, "BulletSuper");
+          bullet.disableBody(true, true);
+          bulletsSuper.add(bullet);
+        }
+        //注册子弹Super和敌机碰撞
+        this.physics.add.overlap(bulletsSuper, enemiesA, this.hit, null, this);
+        this.physics.add.overlap(bulletsSuper, enemiesB, this.hit, null, this);
+        this.physics.add.overlap(
+          bulletLaser,
+          enemiesFast,
+          this.hit,
+          null,
+          this
+        );
+        this.physics.add.overlap(
+          bulletLaser,
+          enemiesBoss,
+          this.hit,
+          null,
+          this
+        );
+      }
       return;
     } else {
       skill.useSkill();
@@ -592,43 +684,94 @@ export class Main extends Scene {
     //   return
     // }
     // hero.pow -= skill.pow;
-    bulletFireBird.fire(hero.x, hero.y - 32);
+    bulletFireBird.fire(this.hero.x, this.hero.y - 32);
+  }
+  fireBomb(skill: Skill) {
+    // if (hero.pow < skill.pow) {
+    //   console.log("能量值不足",skill.pow,"点");
+    //   return
+    // }
+    // hero.pow -= skill.pow;
+    enemiesA.getChildren().forEach((enemy) => {
+      if (enemy.active) {
+        bulletsBomb.getFirstDead().fire((enemy as Enemy).x, (enemy as Enemy).y);
+      }
+    });
+    enemiesB.getChildren().forEach((enemy) => {
+      if (enemy.active) {
+        bulletsBomb.getFirstDead().fire((enemy as Enemy).x, (enemy as Enemy).y);
+      }
+    });
+    enemiesFast.getChildren().forEach((enemy) => {
+      if (enemy.active) {
+        bulletsBomb.getFirstDead().fire((enemy as Enemy).x, (enemy as Enemy).y);
+      }
+    });
+    enemiesBoss.getChildren().forEach((enemy) => {
+      if (enemy.active) {
+        bulletsBomb.getFirstDead().fire((enemy as Enemy).x, (enemy as Enemy).y);
+      }
+    });
+    // bulletsBomb.getChildren().forEach((bullet) => {
+    //   // ene
+    //   // bullet.fire(hero.x, hero.y - 32);
+    // });
+  }
+  fireLaser(skill: Skill) {
+    // if (hero.pow < skill.pow) {
+    //   console.log("能量值不足",skill.pow,"点");
+    //   return
+    // }
+    // hero.pow -= skill.pow;
+    bulletLaser.fire(this.hero.x, this.hero.y - 32);
+  }
+  changeToSuperBullet(skill: Skill) {
+    // if (hero.pow < skill.pow) {
+    //   console.log("能量值不足",skill.pow,"点");
+    //   return
+    // }
+    // hero.pow -= skill.pow;
+    this.hero.setBullets(bulletsSuper)
+    setTimeout(() => {
+      this.hero.setBullets(bullets);
+    },5000)
   }
   skillToImproveVelocity(skill: Skill) {
-    bulletsA.getChildren().forEach((bullet) => {
+    bullets.getChildren().forEach((bullet) => {
       //子弹速度提高
       (bullet as Bullet).velocityRate = 1 + skill.value;
-      hero.fireFrequency = hero.fireFrequency - (hero.fireFrequency / 2) * skill.value
+      this.hero.fireFrequency =
+        this.hero.fireFrequency - (this.hero.fireFrequency / 2) * skill.value;
     });
   }
   skillToImproveDemageRate(skill: Skill) {
-    bulletsA.getChildren().forEach((bullet) => {
+    bullets.getChildren().forEach((bullet) => {
       console.log("子弹伤害倍率提升");
       (bullet as Bullet).demageRate += skill.value;
     });
   }
   skillToImproveBaseDemage(skill: Skill) {
-    bulletsA.getChildren().forEach((bullet) => {
+    bullets.getChildren().forEach((bullet) => {
       console.log("子弹基础伤害提升");
       (bullet as Bullet).baseDemage += skill.value;
     });
   }
   skillToRestoreHp(skill: Skill) {
     console.log("英雄机生命值回满");
-    hero.hp = hero.maxHp;
-    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
+    this.hero.hp = this.hero.maxHp;
+    hpRatio.displayWidth = this.hero.getHpRatio() * hpRatio.width;
   }
   skillToImproveHp(skill: Skill) {
     console.log("英雄机最大生命值+1");
-    hero.maxHp += 1;
+    this.hero.maxHp += 1;
   }
   skillToImproveExpRate(skill: Skill) {
     console.log("英雄机获取经验值倍率增加");
-    hero.expRate += skill.value;
+    this.hero.expRate += skill.value;
   }
   skillToRestorePow(skill: Skill) {
     console.log("英雄机能量值恢复3点");
-    hero.addPow(skill.value);
+    this.hero.addPow(skill.value);
   }
   // getSkillContainer() {
   //   this.sys.pause();
@@ -658,6 +801,6 @@ export class Main extends Scene {
     background.tilePositionY -= 1;
     this.updateDisplayScore();
     expRatio.displayWidth =
-      (hero.level < 25 ? hero.getExpRatio() : 1) * expRatio.width;
+      (this.hero.level < 25 ? this.hero.getExpRatio() : 1) * expRatio.width;
   }
 }

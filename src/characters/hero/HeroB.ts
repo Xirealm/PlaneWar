@@ -2,6 +2,7 @@ import { GameObjects, Physics, Scene } from "phaser";
 import { Hero } from "./Hero";
 
 export class HeroB extends Hero {
+  heroType = "heroB";
   fireFrequency: number = 500; // 子弹的发射频率
   constructor(scene: Scene) {
     super(scene, "heroB");

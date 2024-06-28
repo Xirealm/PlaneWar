@@ -37,11 +37,14 @@ import heroBLevel3Img from "../assets/image/hero/hero_b_03.png";
 import heroBLevel4Img from "../assets/image/hero/hero_b_04.png";
 import heroBLevel5Img from "../assets/image/hero/hero2.png";
 import bulletAImg from "../assets/image/bullet/10.png";
+import bulletBImg from "../assets/image/bullet/7.png";
+import bulletSuperImg from "../assets/image/bullet/bullet.png";
 import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
 import bulletFireBirdImg from "../assets/image/bullet/bulletFireBird.png";
 import bulletFireBirdJson from "../assets/image/bullet/bulletFireBird.json";
 import bulletBombImg from "../assets/image/bullet/bigkill.png"
+import bulletLaserImg from "../assets/image/bullet/11.png"
 
 import supplyExpImg from "../assets/image/hero/article1.png"
 import supplyHpImg from "../assets/image/hero/hero_blood.png"
@@ -120,8 +123,11 @@ export class Preloader extends Scene {
     this.load.image("heroBLevel4", heroBLevel4Img);
     this.load.image("heroBLevel5", heroBLevel5Img);
     //加载子弹图片资源
+    this.load.image("bulletSuper", bulletSuperImg);
     this.load.image("bulletA", bulletAImg);
+    this.load.image("bulletB", bulletBImg);
     this.load.image("bulletBomb", bulletBombImg);
+    this.load.image("bulletLaser", bulletLaserImg);
     this.load.image("pause", pauseImg);
     this.load.image("hpLabel", hpLabelImg);
     this.load.image("progressBarBgRed", progressBarBgRedImg);
