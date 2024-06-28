@@ -1,7 +1,5 @@
 import { Scene, GameObjects, type Types, Physics } from "phaser";
 
-import { ChooseSkill } from "./ChooseSkill";
-
 import { HeroFactory } from "../characters/hero/HeroFactory";
 import { Hero } from "../characters/hero/Hero"
 
@@ -15,6 +13,7 @@ import { EnemyBoss } from "../characters/enemy/EnemyBoss"
 import { BulletFactory } from "../characters/bullet/BulletFactory";
 import { Bullet } from "../characters/bullet/Bullet"
 import { BulletA } from "../characters/bullet/BulletA";
+import { BulletBomb } from "../characters/bullet/BulletBomb";
 import { BulletFireBird } from "../characters/bullet/BulletFireBird";
 
 import { SupplyFactory } from "../characters/supply/SupplyFactory";
@@ -37,6 +36,7 @@ let enemiesB: Physics.Arcade.Group;
 let enemiesFast: Physics.Arcade.Group;
 let enemiesBoss: Physics.Arcade.Group;
 let bulletsA: Physics.Arcade.Group;
+let bulletsBomb: Physics.Arcade.Group;
 let bulletFireBird: BulletFireBird;
 let suppliesExp: Physics.Arcade.Group;
 let suppliesHp: Physics.Arcade.Group;
@@ -66,7 +66,7 @@ export class Main extends Scene {
     const { width, height } = this.cameras.main;
     this.width = width;
     this.height = height;
-    const backgroundKey = this.registry.get("gameBackground")
+    const backgroundKey = this.registry.get("gameBackground");
     // 背景
     background = this.add
       .tileSprite(0, 0, width, height, backgroundKey)
@@ -101,6 +101,13 @@ export class Main extends Scene {
       bullet.disableBody(true, true);
       bulletsA.add(bullet);
     }
+    // 定义子弹炸弹对象池
+    bulletsBomb = this.physics.add.group({
+      classType: BulletBomb,
+      maxSize: 100, // 子弹A对象池的最大数量
+      enable: false,
+      immovable: false,
+    });
     bulletFireBird = BulletFactory.createBullet(this, "BulletFireBird");
     bulletFireBird.disableBody(true, true);
     // 定义敌机A对象池
@@ -283,58 +290,9 @@ export class Main extends Scene {
       .setAlpha(0.8)
       .setOrigin(0);
     expRatio.displayWidth = hero.getExpRatio() * expRatio.width;
-    // chooseSkillScene = this.scene.add("chooseSkill", new ChooseSkill(), true);
-    // skillGroup = this.add.group();
     selectedSkillGroup = this.add.group();
-    // 技能选择容器
-    // skillContainer = this.add.container(this.width / 2, 200).setVisible(false);
-    // const skillActive1 = SkillFactory.createSkill(this, "SkillActive1");
-    // const skillActive2 = SkillFactory.createSkill(this, "SkillActive2");
-    // const skillActive3 = SkillFactory.createSkill(this, "SkillActive3");
-    // const skillActive4 = SkillFactory.createSkill(this, "SkillActive4");
-    // skillGroup.add(skillActive1);
-    // skillGroup.add(skillActive2);
-    // skillGroup.add(skillActive3);
-    // skillGroup.add(skillActive4);
-    //随机抽取3个技能
-    // setTimeout(() => {
-    //   this.getSkillContainer();
-    // }, 1000);
     // 主动技能按钮容器
     activeSkillContainer = this.add.container(0, 500);
-    // const activeSkill1 = this.add
-    //   .image(35, 0, "iconFirebird")
-    //   .setOrigin(0.5)
-    //   .setVisible(false)
-    //   .setDisplaySize(40, 40)
-    //   .setInteractive()
-    //   .on("pointerdown", () => {
-    //     console.log("主动技能1");
-    //     const skill = selectedSkillGroup.getMatching("type", "active")[0];
-    //     console.log(skill);
-    //     skill.useSkill();
-    //   });
-    // const activeSkill2 = this.add
-    //   .image(35, 50, "iconFirebird")
-    //   .setOrigin(0.5)
-    //   .setVisible(false)
-    //   .setDisplaySize(40, 40);
-    // const activeSkill3 = this.add
-    //   .image(35, 100, "iconFirebird")
-    //   .setOrigin(0.5)
-    //   .setVisible(false)
-    //   .setDisplaySize(40, 40);
-    // const activeSkill4 = this.add
-    //   .image(35, 150, "iconFirebird")
-    //   .setOrigin(0.5)
-    //   .setVisible(false)
-    //   .setDisplaySize(40, 40);
-    // activeSkillContainer.add([
-    //   activeSkill1,
-    //   // activeSkill2,
-    //   // activeSkill3,
-    //   // activeSkill4,
-    // ]);
     // 调用注册事件
     this.addEvent();
   }

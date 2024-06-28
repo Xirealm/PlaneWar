@@ -41,6 +41,7 @@ import boomImg from "../assets/image/boom/boom.png";
 import boomJson from "../assets/image/boom/boom.json"
 import bulletFireBirdImg from "../assets/image/bullet/bulletFireBird.png";
 import bulletFireBirdJson from "../assets/image/bullet/bulletFireBird.json";
+import bulletBombImg from "../assets/image/bullet/bigkill.png"
 
 import supplyExpImg from "../assets/image/hero/article1.png"
 import supplyHpImg from "../assets/image/hero/hero_blood.png"
@@ -118,7 +119,9 @@ export class Preloader extends Scene {
     this.load.image("heroBLevel3", heroBLevel3Img);
     this.load.image("heroBLevel4", heroBLevel4Img);
     this.load.image("heroBLevel5", heroBLevel5Img);
+    //加载子弹图片资源
     this.load.image("bulletA", bulletAImg);
+    this.load.image("bulletBomb", bulletBombImg);
     this.load.image("pause", pauseImg);
     this.load.image("hpLabel", hpLabelImg);
     this.load.image("progressBarBgRed", progressBarBgRedImg);
