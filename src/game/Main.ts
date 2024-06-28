@@ -679,11 +679,11 @@ export class Main extends Scene {
     }
   }
   fireBulletFirdBird(skill: Skill) {
-    // if (hero.pow < skill.pow) {
-    //   console.log("能量值不足",skill.pow,"点");
-    //   return
-    // }
-    // hero.pow -= skill.pow;
+    if (this.hero.pow < skill.pow) {
+      console.log("能量值不足",skill.pow,"点");
+      return
+    }
+    this.hero.pow -= skill.pow;
     bulletFireBird.fire(this.hero.x, this.hero.y - 32);
   }
   fireBomb(skill: Skill) {
@@ -712,25 +712,21 @@ export class Main extends Scene {
         bulletsBomb.getFirstDead().fire((enemy as Enemy).x, (enemy as Enemy).y);
       }
     });
-    // bulletsBomb.getChildren().forEach((bullet) => {
-    //   // ene
-    //   // bullet.fire(hero.x, hero.y - 32);
-    // });
   }
   fireLaser(skill: Skill) {
-    // if (hero.pow < skill.pow) {
-    //   console.log("能量值不足",skill.pow,"点");
-    //   return
-    // }
-    // hero.pow -= skill.pow;
+    if (this.hero.pow < skill.pow) {
+      console.log("能量值不足",skill.pow,"点");
+      return
+    }
+    this.hero.pow -= skill.pow;
     bulletLaser.fire(this.hero.x, this.hero.y - 32);
   }
   changeToSuperBullet(skill: Skill) {
-    // if (hero.pow < skill.pow) {
-    //   console.log("能量值不足",skill.pow,"点");
-    //   return
-    // }
-    // hero.pow -= skill.pow;
+    if (this.hero.pow < skill.pow) {
+      console.log("能量值不足",skill.pow,"点");
+      return
+    }
+    this.hero.pow -= skill.pow;
     this.hero.setBullets(bulletsSuper)
     setTimeout(() => {
       this.hero.setBullets(bullets);
@@ -773,29 +769,6 @@ export class Main extends Scene {
     console.log("英雄机能量值恢复3点");
     this.hero.addPow(skill.value);
   }
-  // getSkillContainer() {
-  //   this.sys.pause();
-  //   this.events.on("pointerdown", () => {
-  //     console.log("555");
-
-  //   }, this);
-  //   // this.scene.resume()
-  //   let allElements = skillGroup.getChildren();
-  //   let selectedElements = [];
-  //   for (let i = allElements.length - 1; i > 0; i--) {
-  //     // 随机选择一个从开始到当前索引的元素
-  //     let j = Math.floor(Math.random() * (i + 1));
-  //     // 交换元素
-  //     [allElements[i], allElements[j]] = [allElements[j], allElements[i]];
-  //   }
-  //   // 现在 allElements 数组的前三个元素是随机的，且不重复
-  //   selectedElements = allElements.slice(0, 3);
-  //   selectedElements.forEach((skill, index) => {
-  //     skill.born(index);
-  //     skillContainer.add(skill);
-  //   });
-  //   skillContainer.setVisible(true);
-  // }
   // 每一帧的回调
   update() {
     background.tilePositionY -= 1;
