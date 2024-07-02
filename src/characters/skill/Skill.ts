@@ -1,6 +1,6 @@
 import { GameObjects, Scene, Math } from "phaser";
 import { Bullet } from "../bullet/Bullet";
-
+import { EventBus } from "@/utils/EventBus";
 export abstract class Skill extends GameObjects.Container {
   supplyType: string; // 补给类型
   icon?: string;
@@ -19,7 +19,7 @@ export abstract class Skill extends GameObjects.Container {
       .image(120, 0, "chooseBtn")
       .setScale(0.25)
       .setInteractive()
-      .on("pointerdown", () => {
+      .on("pointerdown", () => {     
         this.getSkill();
       });
     this.add(chooseBtn);
@@ -30,9 +30,9 @@ export abstract class Skill extends GameObjects.Container {
     this.setActive(true);
   }
   getSkill() {
-    this.scene.events.emit("getSkill", this);
+    // this.scene.events.emit("getSkill", this);
+    EventBus.emit("GetSkillInChooseSkill", this);
     // this.scene.scene.sleep("ChooseSkill");
-    console.log("获得技能");
     // this.scene.scene.get("Main").events.emit("getSkill", this)
   }
   abstract useSkill(): void;

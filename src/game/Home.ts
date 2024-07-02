@@ -1,5 +1,6 @@
 import { Scene, GameObjects } from "phaser";
-
+import { getRank } from "../utils/service"
+import { useUserStore } from "@/stores/user";
 export class Home extends Scene {
   rankPage: GameObjects.Container;
   beginPage: GameObjects.Container;
@@ -43,7 +44,7 @@ export class Home extends Scene {
     // 初始化页面内容（示例）
     this.initRankPage(this.rankPage);
     this.initBeginPage(this.beginPage);
-    // this.initMyPage(this.myPage);
+    this.initMyPage(this.myPage);
 
     // 初始时只显示游戏选择页面
     this.showPage(this.beginPage);
@@ -118,15 +119,6 @@ export class Home extends Scene {
       .setName("heroB")
       .setOrigin(0.5)
       .setVisible(false);
-
-    // const heroC = this.add
-    //   .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel3")
-    //   .setOrigin(0.5)
-    //   .setVisible(false);
-    // const heroD = this.add
-    //   .sprite(chooseHeroBg.x, chooseHeroBg.y, "heroALevel4")
-    //   .setOrigin(0.5)
-    //   .setVisible(false);
     heros.add(heroA);
     heros.add(heroB);
     // heros.add(heroC)
@@ -156,7 +148,7 @@ export class Home extends Scene {
       .on("pointerdown", () => {
         this.registry.set("gameBackground", "gameBackground3");
         this.scene.start("Main");
-      })
+      });
     const bgPlace4 = this.add
       .image(0, bgPlace3.y + bgPlace1.displayHeight + 20, "bgPlace4")
       .setDisplaySize(300, 100)
@@ -196,16 +188,30 @@ export class Home extends Scene {
       btnNext,
     ]);
   }
-  initRankPage(page: GameObjects.Container) {
+  async initRankPage(page: GameObjects.Container) {
+    const userStore = useUserStore();
+    const result: any = await getRank(userStore.userData.tel);
+    console.log(result.data);
+    const data = result.data
+    console.log(data);
+    
     const rankBg = this.add
       .image(this.width / 2, 20, "rankBg")
       .setOrigin(0.5, 0)
       .setDisplaySize(this.width - 10, this.height - 100)
       .setAlpha(0.8);
-    const rankData = [
-      { rank: 1, name: "Player1", score: 1500, time: "2024/6/24" },
-      { rank: 2, name: "Player2", score: 1450, time: "2024/6/24" },
-    ];
+    const rankData = data.map((item: any) => {
+      return {
+        rank: item.rank,
+        name: item.name,
+        score: item.score,
+        time: "2024/7/2",
+      };
+    });
+    // const rankData = [
+    //   { rank: 1, name: "xirealm", score: 1500, time: "2024/7/2" },
+    //   { rank: 2, name: "xirealm", score: 1450, time: "2024/7/2" },
+    // ];
     // 列模板样式
     const columnStyle = { fontSize: "13px", color: "#ffffff" };
     // 定义列宽
@@ -256,5 +262,14 @@ export class Home extends Scene {
     rowContainer.add(
       this.add.text(columnWidths[3], 0, entry.time, style).setOrigin(0.5, 0)
     );
+  }
+  initMyPage(page: GameObjects.Container) {
+    const userStore = useUserStore();
+    const logout = this.add.text(this.width / 2, 200, "退出登录").setOrigin(0.5).setInteractive()
+      .on("pointerdown", () => {
+        this.scene.start("Login");
+        userStore.clearUserData()
+      });
+    page.add(logout)
   }
 }

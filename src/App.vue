@@ -16,7 +16,7 @@ let game: Game;
 onMounted(() => {
     game = new Game({
         parent: "container",
-        type: Phaser.WEBGL,
+        // type: Phaser.WEBGL,
         width: 375,
         // 高度依据屏幕宽高比计算
         height: isMobile ? (window.innerHeight / window.innerWidth) * 375 : 667,
@@ -35,7 +35,7 @@ onMounted(() => {
         dom :{
             createContainer: true
         },
-        scene: [Preloader, Login , Home , Main , Pause, ChooseSkill , End],
+        scene: [ Preloader, Login , Home , Main, Pause , End , ChooseSkill],
     });
 });
 onUnmounted(() => {

@@ -25,6 +25,7 @@ import enemyAImg from "../assets/image/enemy/enemy1.png";
 import enemyBImg from "../assets/image/enemy/enemy2.png";
 import enemyFastImg from "../assets/image/enemy/enemy11.png";
 import enemyBossImg from "../assets/image/enemy/boss.png";
+import bossBulletImg from "../assets/image/bullet/boss_bullet.png"
 
 import heroAImg from "../assets/image/hero/hero01.png";
 import heroALevel2Img from "../assets/image/hero/hero02.png";
@@ -36,6 +37,7 @@ import heroBLevel2Img from "../assets/image/hero/hero_b_02.png";
 import heroBLevel3Img from "../assets/image/hero/hero_b_03.png";
 import heroBLevel4Img from "../assets/image/hero/hero_b_04.png";
 import heroBLevel5Img from "../assets/image/hero/hero2.png";
+import heroCImg from "../assets/image/hero/hero4.png"
 import bulletAImg from "../assets/image/bullet/10.png";
 import bulletBImg from "../assets/image/bullet/7.png";
 import bulletSuperImg from "../assets/image/bullet/bullet.png";
@@ -124,6 +126,7 @@ export class Preloader extends Scene {
     this.load.image("heroBLevel5", heroBLevel5Img);
     //加载子弹图片资源
     this.load.image("bulletSuper", bulletSuperImg);
+    this.load.image("bulletBoss", bossBulletImg);
     this.load.image("bulletA", bulletAImg);
     this.load.image("bulletB", bulletBImg);
     this.load.image("bulletBomb", bulletBombImg);

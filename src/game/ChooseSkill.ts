@@ -1,6 +1,7 @@
 import { Scene, GameObjects } from "phaser";
 import { SkillFactory } from "../characters/skill/SkillFactory";
 import { Skill } from "../characters/skill/Skill";
+import { EventBus } from "@/utils/EventBus";
 
 let skillGroup: GameObjects.Group; //技能组
 let skillContainer: GameObjects.Container; //技能选择容器
@@ -41,7 +42,8 @@ export class ChooseSkill extends Scene {
     skillGroup.add(skillBullet3);
     //随机抽取3个技能
     this.getSkillContainer();
-    this.events.on("getSkill", this.onGetSkill, this);
+    EventBus.off("GetSkillInChooseSkill");
+    EventBus.on("GetSkillInChooseSkill", this.onGetSkill, this);
     this.events.on("wake", () => {
       this.getSkillContainer();
     });
@@ -49,7 +51,6 @@ export class ChooseSkill extends Scene {
 
   // }
   getSkillContainer() {
-    console.log("随机抽卡");
     let allElements = skillGroup.getChildren();
     // console.log("技能库技能数：",allElements.length);
     let selectedElements = [];
@@ -78,13 +79,12 @@ export class ChooseSkill extends Scene {
     skillContainer.removeAll()
     if (skill.type === "active") {
       skillGroup.remove(skill);
-      console.log("获得了主动技能");
+      // console.log("获得了主动技能");
     }
     if (skill.level === 5) {
       skillGroup.remove(skill);
     }
-    this.scene.resume("Main");
-    console.log("回到主场景");
-    this.scene.get("Main").events.emit("getSkill", skill);
+    this.scene.resume("Main"); 
+    EventBus.emit("getSkill",skill);
   }
 }

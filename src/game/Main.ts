@@ -1,4 +1,5 @@
 import { Scene, GameObjects, type Types, Physics } from "phaser";
+import { EventBus } from "@/utils/EventBus";
 
 import { HeroFactory } from "../characters/hero/HeroFactory";
 import { Hero } from "../characters/hero/Hero"
@@ -12,11 +13,11 @@ import { EnemyBoss } from "../characters/enemy/EnemyBoss"
 
 import { BulletFactory } from "../characters/bullet/BulletFactory";
 import { Bullet } from "../characters/bullet/Bullet"
-import { BulletA } from "../characters/bullet/BulletA";
 import { BulletSuper } from "../characters/bullet/BulletSuper";
 import { BulletBomb } from "../characters/bullet/BulletBomb";
 import { BulletFireBird } from "../characters/bullet/BulletFireBird";
 import { BulletLaser } from "../characters/bullet/BulletLaser";
+import { BulletBoss} from "../characters/bullet/BulletBoss"
 
 import { SupplyFactory } from "../characters/supply/SupplyFactory";
 import { Supply } from "../characters/supply/Supply"
@@ -26,7 +27,6 @@ import { SupplyPow } from "../characters/supply/SupplyPow";
 
 import { SkillFactory } from "../characters/skill/SkillFactory";
 import { Skill } from "../characters/skill/Skill";
-import { SkillActive1 } from "../characters/skill/SkillActive1";
 
 import { Boom } from "../characters/boom/Boom";
 
@@ -38,6 +38,7 @@ let enemiesB: Physics.Arcade.Group;
 let enemiesFast: Physics.Arcade.Group;
 let enemiesBoss: Physics.Arcade.Group;
 let bullets: Physics.Arcade.Group;
+let bulletsBoss: Physics.Arcade.Group;
 let bulletsSuper: Physics.Arcade.Group;
 let bulletsBomb: Physics.Arcade.Group;
 let bulletFireBird: BulletFireBird;
@@ -67,6 +68,7 @@ export class Main extends Scene {
     const { width, height } = this.cameras.main;
     this.width = width;
     this.height = height;
+    // this.scene.add("ChooseSkill", ChooseSkill);
     const backgroundKey = this.registry.get("gameBackground");
     // 背景
     background = this.add
@@ -98,7 +100,7 @@ export class Main extends Scene {
     });
     // 初始化子弹A对象池
     for (let i = 0; i < 500; i++) {
-      let bullet:Bullet;
+      let bullet: Bullet;
       if (this.hero.heroType === "heroA") {
         bullet = BulletFactory.createBullet(this, "BulletA");
       } else if (this.hero.heroType === "heroB") {
@@ -106,6 +108,18 @@ export class Main extends Scene {
       }
       bullet.disableBody(true, true);
       bullets.add(bullet);
+    }
+    bulletsBoss = this.physics.add.group({
+      classType: BulletBoss,
+      maxSize: 30, // 子弹A对象池的最大数量
+      enable: false,
+      immovable: false,
+    });
+    for (let i = 0; i < 50; i++) {
+      let bullet: Bullet;
+      bullet = BulletFactory.createBullet(this, "BulletBoss");
+      bullet.disableBody(true, true);
+      bulletsBoss.add(bullet);
     }
     bulletsSuper = this.physics.add.group({
       classType: BulletSuper,
@@ -174,6 +188,9 @@ export class Main extends Scene {
       enemy.disableBody(true, true);
       enemiesBoss.add(enemy);
     }
+      enemiesBoss.getChildren().forEach((enemy: any) => {
+        enemy.setBullets(bulletsBoss);
+      });
     // 定义经验补给对象池
     suppliesExp = this.physics.add.group({
       classType: SupplyExp,
@@ -304,11 +321,15 @@ export class Main extends Scene {
     expRatio.displayWidth = this.hero.getExpRatio() * expRatio.width;
     // 主动技能按钮容器
     activeSkillContainer = this.add.container(0, 500);
+    // 在主场景中添加监听
+    EventBus.off("getSkill")
+    EventBus.on("getSkill", this.onGetSkill, this);
     // 调用注册事件
     this.addEvent();
   }
   //注册事件
   addEvent() {
+    this.events.removeListener("getSkillEvent");
     this.time.addEvent({
       delay: 3000, // 定时器 每3秒生成2个敌机
       callback: () => {
@@ -364,8 +385,6 @@ export class Main extends Scene {
     });
     // 监听英雄升级事件
     this.events.on("heroUpgrade", this.onHeroUpgrade, this);
-    // 监听英雄升级事件
-    this.events.on("getSkill", this.onGetSkill, this);
     // 监听英雄主动技能释放
     this.events.on("fireBulletFirdBird", this.fireBulletFirdBird, this);
     this.events.on("fireBomb", this.fireBomb, this);
@@ -400,11 +419,6 @@ export class Main extends Scene {
     this.physics.add.overlap(bulletsBomb, enemiesB, this.hit, null, this);
     this.physics.add.overlap(bulletsBomb, enemiesFast, this.hit, null, this);
     this.physics.add.overlap(bulletsBomb, enemiesBoss, this.hit, null, this);
-    // // 子弹激光和敌机碰撞
-    // this.physics.add.overlap(bulletLaser, enemiesA, this.hit, null, this);
-    // this.physics.add.overlap(bulletLaser, enemiesB, this.hit, null, this);
-    // this.physics.add.overlap(bulletLaser, enemiesFast, this.hit, null, this);
-    // this.physics.add.overlap(bulletLaser, enemiesBoss, this.hit, null, this);
     // 玩家和敌机A碰撞
     this.physics.add.overlap(this.hero, enemiesA, this.injured, null, this);
     // 玩家和敌机B碰撞
@@ -413,6 +427,8 @@ export class Main extends Scene {
     this.physics.add.overlap(this.hero, enemiesFast, this.injured, null, this);
     // 玩家和敌机Boss碰撞
     this.physics.add.overlap(this.hero, enemiesBoss, this.injured, null, this);
+    //玩家与敌机子弹碰撞
+    this.physics.add.overlap(this.hero, bulletsBoss, this.injuredB, null, this);
     // 玩家拾取经验补给（碰撞）
     this.physics.add.overlap(
       this.hero,
@@ -480,9 +496,8 @@ export class Main extends Scene {
     }
   }
   onHeroUpgrade(hero:Hero) {
-    console.log("英雄升级！！！！！！！！！");
+    // console.log("英雄升级！！！！！！！！！");
     levelText.setText(`${hero.level}`);
-    // 处理英雄升级后的逻辑
     //所有敌机升级
     enemiesA.getChildren().forEach((enemy) => {
       (enemy as Enemy).upgrade(hero.level);
@@ -507,14 +522,13 @@ export class Main extends Scene {
     }
     this.spawnEnemy("enemyBoss");
     if (hero.level == 2) {
-      this.scene.pause();
+      this.scene.pause("Main");
       this.game.scene.start("ChooseSkill");
     }
     else if (hero.level % 5 !== 1) {
-      this.scene.pause();
+      this.scene.pause("Main");
       this.scene.wake("ChooseSkill");
     }
-    // 例如，更新UI、播放音效、增加分数等
   }
   // 子弹击中敌军
   hit(bullet, enemy) {
@@ -559,12 +573,25 @@ export class Main extends Scene {
   injured(hero, enemy) {
     // 将敌机销毁
     enemy.killed();
-    hero.reduceHp(1);
     hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
     powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
     if (hero.hp <= 0) {
       // 显示爆炸
       booms.getFirstDead()?.show(enemy.x, enemy.y);
+      hero.disableBody(true, true);
+      this.gameOver();
+    }
+  }
+  injuredB(hero, bullet
+  ) {
+    // 将子弹销毁
+    bullet.disableBody(true, true);
+    // hero.reduceHp(1);
+    hpRatio.displayWidth = hero.getHpRatio() * hpRatio.width;
+    powRatio.displayWidth = hero.getPowRatio() * powRatio.width;
+    if (hero.hp <= 0) {
+      // 显示爆炸
+      booms.getFirstDead()?.show(hero.x, hero.y);
       hero.disableBody(true, true);
       this.gameOver();
     }
@@ -596,8 +623,9 @@ export class Main extends Scene {
   }
   //获得技能
   onGetSkill(skill: Skill) {
+    console.log("我在主场景");
     if (skill.type === "active") {
-      //在主场景新建技能    
+      //在主场景新建技能     
       skill = SkillFactory.createSkill(this, skill.name);
       const activeSkill = this.add
         .image(35, 50 * activeSkillContainer.length, skill.icon)
@@ -623,20 +651,8 @@ export class Main extends Scene {
         //注册子弹激光和敌机碰撞
         this.physics.add.overlap(bulletLaser, enemiesA, this.hit, null, this);
         this.physics.add.overlap(bulletLaser, enemiesB, this.hit, null, this);
-        this.physics.add.overlap(
-          bulletLaser,
-          enemiesFast,
-          this.hit,
-          null,
-          this
-        );
-        this.physics.add.overlap(
-          bulletLaser,
-          enemiesBoss,
-          this.hit,
-          null,
-          this
-        );
+        this.physics.add.overlap(bulletLaser,enemiesFast, this.hit, null, this);
+        this.physics.add.overlap(bulletLaser, enemiesBoss, this.hit, null, this);
       }
       if (skill.name === "SkillActive4") {   
         // 初始化子弹Super对象池

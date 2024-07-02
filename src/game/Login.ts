@@ -1,10 +1,12 @@
 import { Scene } from "phaser";
-import { sendCode } from "../utils/service"
+import { useUserStore } from "../stores/user"
+import { sendCode, register, login } from "../utils/service"
 export class Login extends Scene {
   constructor() {
     super("Login");
   }
   create() {
+    const userStore = useUserStore()
     let { width, height } = this.cameras.main;
     this.add
       .rectangle(0, 0, width, height, 0x000000)
@@ -74,27 +76,33 @@ export class Login extends Scene {
       .setScale(0.3)
       .setOrigin(0.5)
       .setInteractive()
-      .on("pointerdown", () => {    
+      .on("pointerdown", async () => {    
           const account = (
             document.getElementById("account") as HTMLInputElement
           ).value;
           const password = (
             document.getElementById("password") as HTMLInputElement
-          ).value;
-          // if (account === "user" && password === "123") {
-          //     // this.sound.play("bgm");
-          //     this.game.scene.start("Home");
-          //     //将输入框销毁
-          //     accountInput.destroy()
-          //     passwordInput.destroy()
-          // }
-          accountInput.destroy();
-          passwordInput.destroy();
-          this.scene.pause()
-          this.game.scene.start("Home");          
-          //将输入框销毁
-          loginPanel.setActive(false)
-          loginPanel.setVisible(true)
+        ).value;
+          const result:any = await login(account, password)
+          console.log(result);
+          console.log(result.name, result.phone);
+          if (result.code === 1) {
+            userStore.setUserData(result.name, result.phone);
+              accountInput.destroy();
+              passwordInput.destroy();
+              this.scene.pause();
+              this.game.scene.start("Home");
+              //将输入框销毁
+              loginPanel.setActive(false);
+              loginPanel.setVisible(true);
+          }
+          // accountInput.destroy();
+          // passwordInput.destroy();
+          // this.scene.pause();
+          // this.game.scene.start("Home");
+          // //将输入框销毁
+          // loginPanel.setActive(false);
+          // loginPanel.setVisible(true);
         });
     const loginText = this.add
       .text(loginBtn.x, loginBtn.y -10, "登录", {
@@ -233,7 +241,7 @@ export class Login extends Scene {
       .setDisplaySize(150, 30)
       .setOrigin(0, 0.5);
       const registerUsernameElement = document.createElement("input");
-      registerUsernameElement.setAttribute("id", "registerPwd");
+      registerUsernameElement.setAttribute("id", "registerUsername");
       // registerUsernameElement.placeholder = "输入用户名";
       const registerUsernameInput = this.add
         .dom(
@@ -271,8 +279,7 @@ export class Login extends Scene {
       .setDisplaySize(150, 30)
       .setOrigin(0, 0.5);
     const registerPasswordElement = document.createElement("input");
-    registerPasswordElement.setAttribute("id", "registerUsername");
-    // registerPasswordElement.placeholder = "输入密码";
+    registerPasswordElement.setAttribute("id", "registerPwd");
     const registerPasswordInput = this.add
       .dom(
         registerPasswordInputBg.x + 5,
@@ -291,19 +298,17 @@ export class Login extends Scene {
         .setScale(0.5)
         .setOrigin(0.5)
         .setInteractive()
-        .on("pointerdown", () => {
+        .on("pointerdown",async () => {
             const tel = (document.getElementById("tel") as HTMLInputElement).value;
             const code = (document.getElementById("code") as HTMLInputElement).value;
             const username = (document.getElementById("registerUsername") as HTMLInputElement).value;
             const password = (document.getElementById("registerPwd") as HTMLInputElement).value
-            console.log(tel,code,password);
-            // if (account === "user" && password === "123") {
-            //     // this.sound.play("bgm");
-            //     this.game.scene.start("Home");
-            //     //将输入框销毁
-            //     accountInput.destroy()
-            //     passwordInput.destroy()
-            // }
+            const result:any = await register(tel,username,password,code);
+            console.log(result);
+            if (result) {
+              loginPanel.setVisible(true);
+              registerPanel.setVisible(false);
+            }
         });
     const registerText = this.add
       .text(registerBtn.x, registerBtn.y, "注册", {

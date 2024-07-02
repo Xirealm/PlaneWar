@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
-
+import { ChooseSkill } from "./ChooseSkill";
+import { Main } from "./Main"
 export class Pause extends Scene {
   constructor() {
     super("Pause");
@@ -32,7 +33,7 @@ export class Pause extends Scene {
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", () => {
-        // 点击事件：关闭当前场景，打开Main场景
+        this.game.scene.stop("Pause");
         this.scene.start("Main");
       });
     this.add
@@ -43,9 +44,8 @@ export class Pause extends Scene {
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", () => {
-         this.scene.stop();
          this.scene.stop("Main");
-         this.scene.start("Home");
+         this.scene.switch("Home");
       });
   }
 }

@@ -6,7 +6,7 @@ export abstract class Hero extends Physics.Arcade.Sprite {
   heroType: string; //英雄机类型
   hp: number = 5; // 英雄的生命值
   maxHp: number = 5; // 英雄的生命值上限
-  level: number = 1;
+  level: number = 1; //英雄机等级
   maxLevel: number = 25; //英雄机的最高等级
   exp: number = 0; // 英雄的经验值
   expToNextLevel: number = 0;

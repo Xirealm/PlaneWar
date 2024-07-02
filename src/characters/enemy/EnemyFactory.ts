@@ -14,7 +14,7 @@ export class EnemyFactory {
             case "EnemyFast":
                 return new EnemyFast(scene , 0 , 0 );
             case "EnemyBoss":
-                return new EnemyBoss(scene , 0 , 0 );
+                return new EnemyBoss(scene , 200 , 0 );
             default:
                 throw new Error(`敌机类型 ${type} 不支持`);
         }
